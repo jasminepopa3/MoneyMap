@@ -3,8 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bkg_home"> <!-- Poți înlocui cu orice culoare sau imagine de fundal -->
+    android:background="@drawable/bkg_home">
 
-    <!-- Adaugă aici restul conținutului pentru activity, dacă ai nevoie -->
+    <!-- Adaugă un TextView pentru a verifica dacă layout-ul este încărcat -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to HomeActivity!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp" />
 
 </LinearLayout>

@@ -42,6 +42,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Pornește autentificarea cu Google
         findViewById(R.id.buttonGoogle).setOnClickListener(v -> signInWithGoogle());
+
+        // Register basic
+        findViewById(R.id.buttonRegister).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
+        // Login basic
+        findViewById(R.id.buttonLogin).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void signInWithGoogle() {
