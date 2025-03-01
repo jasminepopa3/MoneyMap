@@ -3,16 +3,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bkg_home">
+    android:background="@color/black"
+    android:padding="16dp">
 
-    <!-- Adaugă un TextView pentru a verifica dacă layout-ul este încărcat -->
+    <!-- Calendar -->
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:showWeekNumber="false"
+        android:firstDayOfWeek="2"
+        android:minDate="01/01/2023"
+        android:maxDate="31/12/2070"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <!-- TextView pentru suma cheltuielilor și buget -->
     <TextView
+        android:id="@+id/textViewSummary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to HomeActivity!"
-        android:textSize="24sp"
+        android:text="Suma cheltuielilor: 0 RON / Buget: 1000 RON"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Butonul CATEGORII -->
+    <Button
+        android:id="@+id/buttonCategories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CATEGORII"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="@color/purple_500" />
+
+    <!-- Butonul CHELTUIELI -->
+    <Button
+        android:id="@+id/buttonExpenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CHELTUIELI"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:backgroundTint="@color/teal_700" />
+
+    <!-- Butonul BUGET -->
+    <Button
+        android:id="@+id/buttonBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BUGET"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:padding="12dp"
+        android:backgroundTint="@color/purple_500" />
 
 </LinearLayout>
