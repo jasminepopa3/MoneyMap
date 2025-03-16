@@ -7,12 +7,14 @@ public class Category implements Serializable {
     private String name;
     private String description;
     private String color;
+    private double budget; // Câmp nou pentru buget
 
     // Constructor pentru cazurile în care ID-ul este necunoscut
     public Category(String name, String description, String color) {
         this.name = name;
         this.description = description;
         this.color = color;
+        this.budget = 0; // Buget implicit
     }
 
     // Constructor pentru cazurile în care ID-ul este cunoscut
@@ -21,8 +23,10 @@ public class Category implements Serializable {
         this.name = name;
         this.description = description;
         this.color = color;
+        this.budget = 0; // Buget implicit
     }
 
+    // Getters și setters
     public String getId() {
         return id;
     }
@@ -37,5 +41,13 @@ public class Category implements Serializable {
 
     public String getColor() {
         return color;
+    }
+
+    public double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(double budget) {
+        this.budget = budget;
     }
 }

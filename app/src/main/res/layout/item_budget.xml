@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical">
+
+    <!-- Numele categoriei -->
+    <TextView
+        android:id="@+id/textViewCategoryName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Category Name"
+        android:textSize="16sp"
+        android:textColor="@color/white" />
+
+    <!-- Layout pentru buget și săgeată -->
+    <LinearLayout
+        android:id="@+id/budgetContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_border"
+    android:padding="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical">
+
+    <!-- Bugetul -->
+    <EditText
+        android:id="@+id/editTextBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:text="0"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:focusable="false"
+        android:clickable="true"
+        android:background="@null"
+        android:paddingEnd="8dp" />
+
+        <!-- Linia verticală -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/white" />
+
+    <!-- Săgeata în jos -->
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_arrow_down"
+        android:contentDescription="Modify budget" />
+</LinearLayout>
+
+
+<TextView
+android:id="@+id/textViewCurrency"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="RON"
+android:textSize="16sp"
+android:textColor="@color/white"
+android:layout_marginStart="8dp" />
+
+    </LinearLayout>

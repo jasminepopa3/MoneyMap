@@ -38,5 +38,13 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
             startActivity(intent);
         });
+
+        // Găsește butonul "BUGET" și setează un OnClickListener
+        Button buttonBudget = findViewById(R.id.buttonBudget);
+        buttonBudget.setOnClickListener(v -> {
+            // Creează un intent pentru a naviga către CategoryActivity
+            Intent intent = new Intent(HomeActivity.this, BudgetActivity.class);
+            startActivity(intent);
+        });
     }
 }

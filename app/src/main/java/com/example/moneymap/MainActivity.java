@@ -21,6 +21,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
             defaultCategories.put("Divertisment", "#33FF57"); // Green
             defaultCategories.put("Igiena", "#3357FF"); // Blue
 
+            // Obține luna și anul curent
+            Calendar calendar = Calendar.getInstance();
+            String currentMonth = new java.text.SimpleDateFormat("MMMM", java.util.Locale.US).format(calendar.getTime());
+            String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
+
             // Adaugă fiecare categorie în subcolecția "categories"
             for (Map.Entry<String, String> entry : defaultCategories.entrySet()) {
                 String categoryName = entry.getKey();
@@ -139,7 +145,25 @@ public class MainActivity extends AppCompatActivity {
                 db.collection("users").document(userId).collection("categories")
                         .add(category)
                         .addOnSuccessListener(documentReference -> {
-                            Log.d("Firestore", "Categorie adăugată: " + categoryName + " with ID: " + documentReference.getId());
+                            String categoryId = documentReference.getId();
+                            Log.d("Firestore", "Categorie adăugată: " + categoryName + " with ID: " + categoryId);
+
+                            // Adaugă un buget implicit pentru luna și anul curent
+                            Map<String, Object> budget = new HashMap<>();
+                            budget.put("month", currentMonth);
+                            budget.put("year", currentYear);
+                            budget.put("budget", 0); // Buget implicit
+
+                            db.collection("users").document(userId).collection("categories")
+                                    .document(categoryId).collection("budgets")
+                                    .document(currentYear + "_" + currentMonth)
+                                    .set(budget)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Buget implicit adăugat pentru categoria: " + categoryName);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Eroare la adăugarea bugetului implicit pentru categoria: " + categoryName, e);
+                                    });
                         })
                         .addOnFailureListener(e -> {
                             Log.e("Firestore", "Eroare la adăugarea categoriei: " + categoryName, e);
