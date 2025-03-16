@@ -24,6 +24,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     private Button[] colorButtons; // Array to hold color buttons
     private String selectedColor = "#FF5733"; // Default color (Orange)
     private Button lastSelectedButton; // Track the last selected button
+    private Category categoryToEdit; // Categoria care trebuie editată
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,35 +45,39 @@ public class AddCategoryActivity extends AppCompatActivity {
                 findViewById(R.id.buttonColor5)
         };
 
-        // Set the default selected button (first color)
-        lastSelectedButton = colorButtons[0];
-        lastSelectedButton.setBackgroundResource(R.drawable.selected_color_border);
+        // Verifică dacă a fost transmisă o categorie pentru editare
+        if (getIntent().hasExtra("category")) {
+            categoryToEdit = (Category) getIntent().getSerializableExtra("category");
+            if (categoryToEdit != null) {
+                // Precompletează câmpurile cu datele din categoria selectată
+                editTextCategoryName.setText(categoryToEdit.getName());
+                editTextCategoryDescription.setText(categoryToEdit.getDescription());
+                selectedColor = categoryToEdit.getColor();
+
+                // Selectează butonul de culoare corespunzător
+                for (int i = 0; i < colorButtons.length; i++) {
+                    if (selectedColor.equals(getColorForButton(i))) {
+                        colorButtons[i].setBackgroundResource(R.drawable.selected_color_border);
+                        lastSelectedButton = colorButtons[i];
+                        break;
+                    }
+                }
+            }
+        } else {
+            // Dacă este o categorie nouă, setează culoarea implicită
+            lastSelectedButton = colorButtons[0];
+            lastSelectedButton.setBackgroundResource(R.drawable.selected_color_border);
+        }
 
         // Listener pentru butoanele de culoare
         for (int i = 0; i < colorButtons.length; i++) {
             final int index = i;
             colorButtons[i].setOnClickListener(v -> {
                 // Remove the border from the last selected button
-                lastSelectedButton.setBackgroundResource(R.drawable.button_background); // Reset to default background
+                lastSelectedButton.setBackgroundResource(R.drawable.button_background);
 
                 // Set the selected color
-                switch (index) {
-                    case 0:
-                        selectedColor = "#FF5733"; // Orange
-                        break;
-                    case 1:
-                        selectedColor = "#33FF57"; // Green
-                        break;
-                    case 2:
-                        selectedColor = "#3357FF"; // Blue
-                        break;
-                    case 3:
-                        selectedColor = "#FF33A1"; // Pink
-                        break;
-                    case 4:
-                        selectedColor = "#A133FF"; // Purple
-                        break;
-                }
+                selectedColor = getColorForButton(index);
 
                 // Highlight the selected button with a border
                 colorButtons[index].setBackgroundResource(R.drawable.selected_color_border);
@@ -84,6 +89,17 @@ public class AddCategoryActivity extends AppCompatActivity {
 
         // Listener pentru butonul de salvare
         buttonSaveCategory.setOnClickListener(v -> saveCategory());
+    }
+
+    private String getColorForButton(int index) {
+        switch (index) {
+            case 0: return "#FF5733"; // Orange
+            case 1: return "#33FF57"; // Green
+            case 2: return "#3357FF"; // Blue
+            case 3: return "#FF33A1"; // Pink
+            case 4: return "#A133FF"; // Purple
+            default: return "#FF5733"; // Default
+        }
     }
 
     private void saveCategory() {
@@ -104,20 +120,34 @@ public class AddCategoryActivity extends AppCompatActivity {
             Map<String, Object> category = new HashMap<>();
             category.put("name", name);
             category.put("description", description);
-            category.put("color", selectedColor); // Adaugă culoarea selectată
+            category.put("color", selectedColor);
 
-            // Adaugă categoria în Firestore
-            db.collection("users").document(userId).collection("categories")
-                    .add(category)
-                    .addOnSuccessListener(documentReference -> {
-                        Log.d("Firestore", "Category added with ID: " + documentReference.getId());
-                        Toast.makeText(this, "Category added successfully", Toast.LENGTH_SHORT).show();
-                        finish(); // Închide activitatea și revine la CategoryActivity
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Error adding category", e);
-                        Toast.makeText(this, "Failed to add category", Toast.LENGTH_SHORT).show();
-                    });
+            if (categoryToEdit != null) {
+                // Dacă este o categorie existentă, actualizează documentul
+                db.collection("users").document(userId).collection("categories")
+                        .document(categoryToEdit.getId())
+                        .set(category)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Category updated successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("Firestore", "Error updating category", e);
+                            Toast.makeText(this, "Failed to update category", Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                // Dacă este o categorie nouă, adaugă un nou document
+                db.collection("users").document(userId).collection("categories")
+                        .add(category)
+                        .addOnSuccessListener(documentReference -> {
+                            Toast.makeText(this, "Category added successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("Firestore", "Error adding category", e);
+                            Toast.makeText(this, "Failed to add category", Toast.LENGTH_SHORT).show();
+                        });
+            }
         }
     }
 }

@@ -114,8 +114,9 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
 
     @Override
     public void onCategoryClick(Category category) {
-        Toast.makeText(this, "Ai apăsat pe " + category.getName(), Toast.LENGTH_SHORT).show();
-        // Aici poți naviga către o altă activitate sau afișa detalii
+        Intent intent = new Intent(CategoryActivity.this, AddCategoryActivity.class);
+        intent.putExtra("category", category); // Transmite categoria pentru editare
+        startActivity(intent);
     }
 
     @Override
