@@ -1,6 +1,8 @@
 package com.example.moneymap;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.Toast;
 
@@ -27,6 +29,14 @@ public class HomeActivity extends AppCompatActivity {
             // Ignoră selecția zilei (nu face nimic)
             // Re-setăm ziua curentă ca fiind selectată
             calendarView.setDate(currentDate, true, true);
+        });
+
+        // Găsește butonul "CATEGORII" și setează un OnClickListener
+        Button buttonCategories = findViewById(R.id.buttonCategories);
+        buttonCategories.setOnClickListener(v -> {
+            // Creează un intent pentru a naviga către CategoryActivity
+            Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
+            startActivity(intent);
         });
     }
 }

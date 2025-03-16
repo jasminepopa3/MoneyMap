@@ -34,6 +34,15 @@ android {
 }
 
 dependencies {
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+
+    // Firebase dependencies (no need to specify versions)
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
+    // Other dependencies
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -41,12 +50,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    // Firebase dependencies
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.auth)
-
-    // Other dependencies
     implementation("androidx.browser:browser:1.0.0")
     implementation("com.google.code.gson:gson:2.6.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0")

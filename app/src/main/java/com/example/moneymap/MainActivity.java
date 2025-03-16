@@ -18,6 +18,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123; // Cod pentru rezultatul autentificării
@@ -92,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(this, "Autentificat ca: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
+                        checkIfUserExists(user);
+
                         // După autentificare reușită, mergi către HomeActivity
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         startActivity(intent);
@@ -101,6 +109,91 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "Autentificare eșuată", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void addDefaultCategories(FirebaseUser user) {
+        if (user != null) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            Log.d("Firestore", "Adding default categories for user: " + userId);
+
+            // Lista de categorii predefinite cu culori
+            Map<String, String> defaultCategories = new HashMap<>();
+            defaultCategories.put("Alimente", "#FF5733"); // Orange
+            defaultCategories.put("Divertisment", "#33FF57"); // Green
+            defaultCategories.put("Igiena", "#3357FF"); // Blue
+
+            // Adaugă fiecare categorie în subcolecția "categories"
+            for (Map.Entry<String, String> entry : defaultCategories.entrySet()) {
+                String categoryName = entry.getKey();
+                String color = entry.getValue();
+
+                Map<String, Object> category = new HashMap<>();
+                category.put("name", categoryName);
+                category.put("description", ""); // Descriere goală pentru categorii predefinite
+                category.put("color", color); // Adaugă culoarea
+
+                Log.d("Firestore", "Adding category: " + categoryName + " with color: " + color);
+
+                db.collection("users").document(userId).collection("categories")
+                        .add(category)
+                        .addOnSuccessListener(documentReference -> {
+                            Log.d("Firestore", "Categorie adăugată: " + categoryName + " with ID: " + documentReference.getId());
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("Firestore", "Eroare la adăugarea categoriei: " + categoryName, e);
+                        });
+            }
+        } else {
+            Log.e("Firestore", "User is null. Cannot add default categories.");
+        }
+    }
+
+    private void addUserAndDefaultCategories(FirebaseUser user) {
+        if (user != null) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Adaugă documentul utilizatorului în colecția "users"
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("email", user.getEmail());
+            userData.put("name", user.getDisplayName());
+
+            db.collection("users").document(userId)
+                    .set(userData)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Firestore", "Utilizator adăugat: " + userId);
+                        // Adaugă categoriile predefinite
+                        addDefaultCategories(user);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Eroare la adăugarea utilizatorului", e);
+                    });
+        }
+    }
+
+    private void checkIfUserExists(FirebaseUser user) {
+        if (user != null) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Verifică dacă documentul utilizatorului există
+            db.collection("users").document(userId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (!documentSnapshot.exists()) {
+                            // Dacă documentul nu există, înseamnă că utilizatorul este nou
+                            // Adaugă documentul utilizatorului și categoriile predefinite
+                            addUserAndDefaultCategories(user);
+                        } else {
+                            Log.d("Firestore", "Utilizatorul există deja. Nu se adaugă categorii predefinite.");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Eroare la verificarea existenței utilizatorului", e);
+                    });
+        }
     }
 
 }
