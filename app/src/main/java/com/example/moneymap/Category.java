@@ -50,4 +50,10 @@ public class Category implements Serializable {
     public void setBudget(double budget) {
         this.budget = budget;
     }
+
+    @Override
+    public String toString() {
+        return name; // Return the category name to display in the spinner
+    }
+
 }

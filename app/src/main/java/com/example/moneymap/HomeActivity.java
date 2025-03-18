@@ -46,5 +46,12 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, BudgetActivity.class);
             startActivity(intent);
         });
+
+        //butonul de cheltuieli
+        Button buttonExpenses = findViewById(R.id.buttonExpenses); // Get the button
+        buttonExpenses.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ExpenseActivity.class);
+            startActivity(intent);
+        });
     }
 }
