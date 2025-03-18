@@ -1,6 +1,7 @@
 package com.example.moneymap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.io.Serializable;
+
 
 import java.util.List;
 
@@ -41,12 +44,22 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GroupedExpense groupedExpense = groupedExpenses.get(position);
         Category category = groupedExpense.getCategory();
+
         holder.textCategory.setText(category.getName());
         holder.textTotalExpense.setText(String.format("Total: %.2f RON", groupedExpense.getTotalExpense()));
 
-        //functie pentru a recupera bugetul pentru luna si a anul selectat
+        // data pentru buget
         fetchBudgetData(holder, category, groupedExpense.getTotalExpense());
+
+        // click pt detalii cheltuieli
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ExpenseDetailsActivity.class);
+            intent.putExtra("expenseList", (Serializable) groupedExpense.getExpenses());
+            intent.putExtra(("categoryName"),category.getName());
+            context.startActivity(intent);
+        });
     }
+
 
     private void fetchBudgetData(ViewHolder holder, Category category, double totalExpense) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

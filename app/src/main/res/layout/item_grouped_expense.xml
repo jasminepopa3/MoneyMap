@@ -3,35 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_marginBottom="16dp"
+    android:layout_gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/text_category_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Category Name"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+    android:id="@+id/text_category_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Category Name"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:textColor="#FFFFFF" />
 
     <TextView
-        android:id="@+id/text_total_expense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total: $0.00"
-        android:textSize="16sp"/>
+    android:id="@+id/text_total_expense"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Total: $0.00"
+    android:textSize="16sp"
+    android:textColor="#FFFFFF" />
 
     <TextView
-        android:id="@+id/text_category_budget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Budget: 0.00 RON"
-        android:textSize="16sp"/>
+    android:id="@+id/text_category_budget"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Budget: 0.00 RON"
+    android:textSize="16sp"
+    android:textColor="#FFFFFF" />
 
     <TextView
-        android:id="@+id/text_budget_percentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Percentage: 0.00%"
-        android:textSize="16sp"
-        android:textColor="#FF0000"/>
-</LinearLayout>
+    android:id="@+id/text_budget_percentage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Percentage: 0.00%"
+    android:textSize="16sp"
+    android:textColor="#FF0000" />
+    </LinearLayout>

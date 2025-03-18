@@ -55,7 +55,6 @@ public class ExpenseActivity extends AppCompatActivity {
         buttonAddExpense = findViewById(R.id.button_add_expense);
 
 
-
         // launcher
         addExpenseLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -106,7 +105,7 @@ public class ExpenseActivity extends AppCompatActivity {
 
         // RecyclerView si Adapter
         recyclerView = findViewById(R.id.recycler_view_expenses);
-        adapter = new ExpenseAdapter(groupedExpensesList, this,selectedMonth,selectedYear);
+        adapter = new ExpenseAdapter(groupedExpensesList, this, selectedMonth, selectedYear);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -132,7 +131,7 @@ public class ExpenseActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String newYear = parent.getItemAtPosition(position).toString();
-                if (!newYear.equals(selectedYear)) { // Ensure it's a new selection
+                if (!newYear.equals(selectedYear)) {
                     selectedYear = newYear;
                     updateExpenses();
                 }
