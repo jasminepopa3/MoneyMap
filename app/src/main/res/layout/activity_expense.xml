@@ -11,12 +11,11 @@
         android:id="@+id/expenses_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage your expenses"
+        android:text="Organizeaza cheltuielile"
         android:textSize="25sp"
         android:textColor="@android:color/white"
         android:padding="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/darker_gray"/>
+        android:layout_marginBottom="16dp" />
 
     <!-- Month and Year Selection Layout -->
     <LinearLayout
@@ -51,7 +50,7 @@
         android:id="@+id/button_add_expense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Expense"
+        android:text="Adauga"
         android:textSize="16sp"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
@@ -63,11 +62,9 @@
         android:id="@+id/text_expenses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Expenses for selected month and year"
         android:textSize="16sp"
         android:textColor="@android:color/white"
-        android:padding="8dp"
-        android:background="@android:color/darker_gray"/>
+        android:padding="8dp" />
 
     <!-- RecyclerView for displaying expenses -->
     <androidx.recyclerview.widget.RecyclerView

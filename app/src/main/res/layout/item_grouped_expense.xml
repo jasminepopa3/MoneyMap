@@ -1,0 +1,37 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/text_category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category Name"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/text_total_expense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: $0.00"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/text_category_budget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Budget: 0.00 RON"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/text_budget_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Percentage: 0.00%"
+        android:textSize="16sp"
+        android:textColor="#FF0000"/>
+</LinearLayout>

@@ -37,25 +37,21 @@ public class AddExpenseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
-        // Retrieve the selected month and year from the Intent
         Intent intent = getIntent();
         selectedMonth = intent.getStringExtra("month");
         selectedYear = intent.getStringExtra("year");
 
-        // Initialize views
+        // views
         spinnerCategory = findViewById(R.id.spinner_category);
         editTextName = findViewById(R.id.editText_name);
         editTextSum = findViewById(R.id.editText_sum);
         buttonSaveExpense = findViewById(R.id.button_save_expense);
         buttonCancel = findViewById(R.id.button_cancel);
 
-        // Load categories from Firebase
+        // incarcam categ
         loadCategories();
 
-        // Set save expense button click listener
         buttonSaveExpense.setOnClickListener(v -> saveExpense());
-
-        // Set cancel button click listener
         buttonCancel.setOnClickListener(v -> finish());
     }
 
@@ -85,17 +81,17 @@ public class AddExpenseActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Set the category adapter
+                        // Set category adapter
                         ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
                         spinnerCategory.setAdapter(categoryAdapter);
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error loading categories", e);
-                        Toast.makeText(this, "Error loading categories", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Eroare la incarcarea categoriilor", Toast.LENGTH_SHORT).show();
                     });
         } else {
             Log.e("Auth", "No user is authenticated");
-            Toast.makeText(this, "User is not authenticated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User-ul nu e autentificat", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -105,9 +101,9 @@ public class AddExpenseActivity extends AppCompatActivity {
         String sumText = editTextSum.getText().toString().trim();
         Category selectedCategory = (Category) spinnerCategory.getSelectedItem();
 
-        // Validate inputs
+        // validam inputul
         if (name.isEmpty() || sumText.isEmpty() || selectedCategory == null) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Completati toate campurile", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -115,11 +111,11 @@ public class AddExpenseActivity extends AppCompatActivity {
         try {
             sum = Float.parseFloat(sumText);
             if (sum <= 0) {
-                Toast.makeText(this, "Amount must be greater than zero", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Suma trebuie sa fie mai mare ca 0", Toast.LENGTH_SHORT).show();
                 return;
             }
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid amount format", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Suma invalida", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -128,7 +124,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Create a map for the expense with proper field names including categoryId
+            //mapam obiectele expense impreuna cu atributele lor
             Map<String, Object> expense = new HashMap<>();
             expense.put("categoryId", selectedCategory.getId());
             expense.put("name", name);
@@ -137,17 +133,18 @@ public class AddExpenseActivity extends AppCompatActivity {
             expense.put("year", selectedYear);
             expense.put("timestamp", System.currentTimeMillis());
 
-            // Save the expense in Firestore
+            // salvam expense in baza de date
             db.collection("users").document(userId).collection("expenses")
                     .add(expense)
                     .addOnSuccessListener(documentReference -> {
                         Log.d("Firestore", "Expense added successfully with ID: " + documentReference.getId());
-                        Toast.makeText(this, "Expense added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Cheltuiala a fost adaugata cu succes", Toast.LENGTH_SHORT).show();
 
-                        // Create an Expense object to return
-                        Expense newExpense = new Expense(selectedCategory, name, sum, selectedMonth, selectedYear);
 
-                        // Pass the expense object back to ExpenseActivity
+                        Expense newExpense = new Expense(name, sum, selectedMonth, selectedYear);
+
+                        //pasam obiectul expense in ExpenseActivity pentru
+                        // a fi adaugat in categ corespunzatoare si afisat
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("newExpense", newExpense);
                         setResult(RESULT_OK, resultIntent);
@@ -155,10 +152,10 @@ public class AddExpenseActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error adding expense", e);
-                        Toast.makeText(this, "Failed to add expense", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Cheltuiala nu a putut fi adaugata", Toast.LENGTH_SHORT).show();
                     });
         } else {
-            Toast.makeText(this, "User is not authenticated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User-ul nu e autentificat", Toast.LENGTH_SHORT).show();
         }
     }
 }

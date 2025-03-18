@@ -32,15 +32,15 @@ import java.util.Set;
 
 public class ExpenseActivity extends AppCompatActivity {
     private Spinner spinnerMonth, spinnerYear;
-    private TextView textExpenses, textTotalExpenses;
+    private TextView textExpenses;
     private Button buttonAddExpense;
-    private List<Expense> expensesList = new ArrayList<>();
+    private List<GroupedExpense> groupedExpensesList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ExpenseAdapter adapter;
     private String selectedMonth, selectedYear;
-    private Map<String, Category> categoryCache = new HashMap<>(); // Cache for categories
+    private Map<String, Category> categoryCache = new HashMap<>();
 
-    // Declare the launcher for handling the result of AddExpenseActivity
+
     private ActivityResultLauncher<Intent> addExpenseLauncher;
 
     @Override
@@ -48,36 +48,24 @@ public class ExpenseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense);
 
-        // Initialize Views
+        // views
         spinnerMonth = findViewById(R.id.spinner_month);
         spinnerYear = findViewById(R.id.spinner_year);
         textExpenses = findViewById(R.id.text_expenses);
         buttonAddExpense = findViewById(R.id.button_add_expense);
 
-        // Initialize the RecyclerView and its Adapter
-        recyclerView = findViewById(R.id.recycler_view_expenses);
-        adapter = new ExpenseAdapter(expensesList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
 
-        // Initialize the activity result launcher
+
+        // launcher
         addExpenseLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
-                        // Handle the result if the expense was added successfully
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Expense newExpense = (Expense) data.getSerializableExtra("newExpense");
-                            if (newExpense != null) {
-                                expensesList.add(newExpense);
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
+                        updateExpenses();
                     }
                 });
 
-        // Configure Spinner for months
+        // spinner pentru luni
         ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.months,
@@ -86,14 +74,14 @@ public class ExpenseActivity extends AppCompatActivity {
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonth.setAdapter(monthAdapter);
 
-        // Generate years dynamically (similar to BudgetActivity)
+        //generarea anilor
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         List<String> years = new ArrayList<>();
         for (int year = currentYear - 2; year <= currentYear + 5; year++) {
             years.add(String.valueOf(year));
         }
 
-        // Configure Spinner for years
+        // spinner pentru ani
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -102,12 +90,12 @@ public class ExpenseActivity extends AppCompatActivity {
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYear.setAdapter(yearAdapter);
 
-        // Set default values for month and year
+        // valori default pentru luna si an
         Calendar calendar = Calendar.getInstance();
         int currentMonthIndex = calendar.get(Calendar.MONTH);
         spinnerMonth.setSelection(currentMonthIndex);
 
-        // Find the index of current year in our years list
+        // index-ul anului curent
         int yearIndex = years.indexOf(String.valueOf(currentYear));
         if (yearIndex >= 0) {
             spinnerYear.setSelection(yearIndex);
@@ -116,7 +104,13 @@ public class ExpenseActivity extends AppCompatActivity {
         selectedMonth = spinnerMonth.getSelectedItem().toString();
         selectedYear = spinnerYear.getSelectedItem().toString();
 
-        // Listener for Month selection
+        // RecyclerView si Adapter
+        recyclerView = findViewById(R.id.recycler_view_expenses);
+        adapter = new ExpenseAdapter(groupedExpensesList, this,selectedMonth,selectedYear);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        // Listener pt selectarea lunii
         spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -129,11 +123,11 @@ public class ExpenseActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // nimic
             }
         });
 
-// Listener for Year selection
+        // Listener pt selectarea anului
         spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -146,11 +140,11 @@ public class ExpenseActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // nimic
             }
         });
 
-        // Add Expense Button Click
+        // Add Expense Button
         buttonAddExpense.setOnClickListener(v -> {
             Intent intent = new Intent(ExpenseActivity.this, AddExpenseActivity.class);
             intent.putExtra("month", selectedMonth);
@@ -158,7 +152,7 @@ public class ExpenseActivity extends AppCompatActivity {
             addExpenseLauncher.launch(intent);
         });
 
-        // Load all categories into cache first
+        // incarcam categoriile
         loadCategoriesIntoCache();
     }
 
@@ -184,7 +178,7 @@ public class ExpenseActivity extends AppCompatActivity {
                                 categoryCache.put(id, category);
                             }
                         }
-                        // Now that we have all categories cached, we can load expenses
+                        //incarcam expenses cand am incarcat categoriile
                         updateExpenses();
                     })
                     .addOnFailureListener(e -> {
@@ -195,7 +189,7 @@ public class ExpenseActivity extends AppCompatActivity {
     }
 
     private void updateExpenses() {
-        textExpenses.setText("Loading expenses for " + selectedMonth + " " + selectedYear + "...");
+        textExpenses.setText("Se afiseaza cheltuielile pentru " + selectedMonth + " " + selectedYear + "...");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -209,56 +203,54 @@ public class ExpenseActivity extends AppCompatActivity {
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         Log.d("Firestore", "Expenses fetched: " + queryDocumentSnapshots.size());
 
-                        // Check if there are no expenses
                         if (queryDocumentSnapshots.isEmpty()) {
-                            textExpenses.setText("No expenses for " + selectedMonth + " " + selectedYear);
-                            expensesList.clear();
+                            textExpenses.setText("Nicio cheltuiala pentru " + selectedMonth + " " + selectedYear);
+                            groupedExpensesList.clear();
                             adapter.notifyDataSetChanged();
                             return;
                         }
 
-                        Set<String> expenseIds = new HashSet<>(); // Track added expense IDs
+                        //folosim map pentru a grupa cheltuielile pe categorii
+                        Map<String, GroupedExpense> groupedExpenses = new HashMap<>();
 
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            String expenseId = document.getId(); // Get unique ID
-                            if (expenseIds.contains(expenseId)) {
-                                continue; // Skip duplicate entry
-                            }
-                            expenseIds.add(expenseId); // Mark as added
-
                             String categoryId = document.getString("categoryId");
-                            String name = document.getString("name");
                             double sum = document.getDouble("sum");
+                            String name = document.getString("name");
 
-                            if (name != null && categoryId != null) {
-                                // Get category from cache
+                            if (categoryId != null) {
                                 Category category = categoryCache.get(categoryId);
                                 if (category != null) {
-                                    Expense expense = new Expense(category, name, (float) sum, selectedMonth, selectedYear);
-                                    expensesList.add(expense);
+                                    // facem un Expense obj
+                                    Expense expense = new Expense(name, sum, selectedMonth, selectedYear);
+
+                                    //daca e o categorie care inca nu apare in map facem un nou GroupedExpense obj
+                                    //folosind id-ul categ
+                                    if (!groupedExpenses.containsKey(categoryId)) {
+                                        GroupedExpense groupedExpense = new GroupedExpense(category);
+                                        groupedExpense.addExpense(expense);
+                                        groupedExpenses.put(categoryId, groupedExpense);
+                                    } else {
+                                        //daca deja categ exista in map doar adaugam expense
+                                        groupedExpenses.get(categoryId).addExpense(expense);
+                                    }
                                 }
                             }
                         }
 
-                        // Update UI after all expenses are processed
+                        groupedExpensesList.clear();
+                        groupedExpensesList.addAll(groupedExpenses.values());
                         adapter.notifyDataSetChanged();
-                        textExpenses.setText("Expenses for " + selectedMonth + " " + selectedYear);
+
+                        textExpenses.setText("Cheltuieli pentru " + selectedMonth + " " + selectedYear);
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error loading expenses", e);
-                        textExpenses.setText("Error loading expenses");
+                        textExpenses.setText("Eroare la afisarea cheltuielilor");
                     });
         } else {
-            textExpenses.setText("User is not authenticated");
+            textExpenses.setText("User-ul nu este logat");
         }
     }
 
-
-//    private void updateTotalExpenses() {
-//        float total = 0;
-//        for (Expense expense : expensesList) {
-//            total += expense.getSum();
-//        }
-//        textTotalExpenses.setText(String.format("Total: $%.2f", total));
-//    }
 }

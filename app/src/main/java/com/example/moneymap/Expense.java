@@ -3,15 +3,13 @@ package com.example.moneymap;
 import java.io.Serializable;
 
 public class Expense implements Serializable {
-    private Category category;  // Change category from String to Category model
     private String name;
-    private float sum;
+    private double sum;
     private String month;
     private String year;
 
-    // Constructor for Expense with a Category model
-    public Expense(Category category, String name, float sum, String month, String year) {
-        this.category = category;
+
+    public Expense(String name, double sum, String month, String year) {
         this.name = name;
         this.sum = sum;
         this.month = month;
@@ -19,15 +17,11 @@ public class Expense implements Serializable {
     }
 
     // Getters and Setters
-    public Category getCategory() {
-        return category;
-    }
-
     public String getName() {
         return name;
     }
 
-    public float getSum() {
+    public double getSum() {
         return sum;
     }
 
@@ -42,7 +36,6 @@ public class Expense implements Serializable {
     @Override
     public String toString() {
         return "Expense{" +
-                "category=" + category.getName() +
                 ", name='" + name + '\'' +
                 ", sum=" + sum +
                 ", month='" + month + '\'' +
