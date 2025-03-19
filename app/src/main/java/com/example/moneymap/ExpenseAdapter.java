@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,12 +27,16 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     private Context context;
     private String selectedMonth;
     private String selectedYear;
+    private ActivityResultLauncher<Intent> detailsLauncher;
 
-    public ExpenseAdapter(List<GroupedExpense> groupedExpenses, Context context, String selectedMonth, String selectedYear) {
+
+    public ExpenseAdapter(List<GroupedExpense> groupedExpenses, Context context, String selectedMonth, String selectedYear,ActivityResultLauncher<Intent> detailsLauncher) {
         this.groupedExpenses = groupedExpenses;
         this.context = context;
         this.selectedMonth = selectedMonth;
         this.selectedYear = selectedYear;
+        this.detailsLauncher = detailsLauncher;
+
     }
 
     @NonNull
@@ -59,7 +64,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
             intent.putExtra(("categoryName"),category.getName());
             intent.putExtra(("selectedMonth"),selectedMonth);
             intent.putExtra(("selectedYear"),selectedYear);
-            context.startActivity(intent);
+            detailsLauncher.launch(intent);
         });
     }
 

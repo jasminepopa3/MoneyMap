@@ -1,5 +1,6 @@
 package com.example.moneymap;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -97,6 +98,11 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         adapter = new ExpenseListAdapter(expenseList, this);
         recyclerView.setAdapter(adapter);
 
+        adapter.setOnItemLongClickListener(position -> {
+            Expense expenseToDelete = expenseList.get(position);
+            deleteExpense(expenseToDelete, position);
+        });
+
         spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -173,6 +179,72 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error fetching expenses", e);
                         Toast.makeText(this, "Eroare la incarcarea cheltuielilor", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private void deleteExpense(Expense expense, int position) {
+        //pop-up pentru confirmarea stergerii
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Confirma stergerea cheltuielii");
+        builder.setMessage("Esti sigur ca vrei sa stergi cheltuiala inregistrata?\n\n" +
+                expense.getName() + ": " + expense.getSum() + " RON");
+
+        builder.setPositiveButton("Sterge", (dialog, id) -> {
+            proceedWithDeletion(expense, position);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, id) -> {
+            dialog.dismiss();
+        });
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // delete cheltuiala
+    private void proceedWithDeletion(Expense expense, int position) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("users").document(userId).collection("expenses")
+                    .whereEqualTo("name", expense.getName())
+                    .whereEqualTo("sum", expense.getSum())
+                    .whereEqualTo("month", expense.getMonth())
+                    .whereEqualTo("year", expense.getYear())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            db.collection("users").document(userId).collection("expenses")
+                                    .document(document.getId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        // stergem ob din lista si update adapter
+                                        expenseList.remove(position);
+                                        adapter.notifyItemRemoved(position);
+
+                                        Toast.makeText(this, "Cheltuiala stearsa", Toast.LENGTH_SHORT).show();
+
+                                        // daca grouped expense devine goala dam update
+                                        if (expenseList.isEmpty()) {
+                                            textEmptyState.setVisibility(View.VISIBLE);
+                                            recyclerView.setVisibility(View.GONE);
+                                        }
+
+                                        Intent resultIntent = new Intent();
+                                        setResult(RESULT_OK, resultIntent);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Eroare la stergerea cheltuielii", e);
+                                        Toast.makeText(this, "Eroare la stergerea cheltuielii", Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Cheltuiala selectata nu exista in baza de date", e);
+                        Toast.makeText(this, "Cheltuiala selectata nu exista in baza de date", Toast.LENGTH_SHORT).show();
                     });
         }
     }

@@ -45,6 +45,8 @@ public class ExpenseActivity extends AppCompatActivity {
 
 
     private ActivityResultLauncher<Intent> addExpenseLauncher;
+    private ActivityResultLauncher<Intent> expenseDetailsLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +58,20 @@ public class ExpenseActivity extends AppCompatActivity {
         spinnerYear = findViewById(R.id.spinner_year);
         textExpenses = findViewById(R.id.text_expenses);
         buttonAddExpense = findViewById(R.id.button_add_expense);
-        progressBar = findViewById(R.id.progress_bar); // Initialize ProgressBar
+        progressBar = findViewById(R.id.progress_bar);
 
 
-        // launcher
+        // launcher pt add expense
         addExpenseLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        updateExpenses();
+                    }
+                });
+
+        // launcher pt expense details
+        expenseDetailsLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
@@ -109,7 +120,7 @@ public class ExpenseActivity extends AppCompatActivity {
 
         // RecyclerView si Adapter
         recyclerView = findViewById(R.id.recycler_view_expenses);
-        adapter = new ExpenseAdapter(groupedExpensesList, this, selectedMonth, selectedYear);
+        adapter = new ExpenseAdapter(groupedExpensesList, this, selectedMonth, selectedYear, expenseDetailsLauncher);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -218,6 +229,10 @@ public class ExpenseActivity extends AppCompatActivity {
                         Log.d("Firestore", "Expenses fetched: " + queryDocumentSnapshots.size());
 
                         if (queryDocumentSnapshots.isEmpty()) {
+                            //ascundem loading bar-ul daca nu avem cheltuieli pt data selectata
+                            progressBar.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            textExpenses.setVisibility(View.VISIBLE);
                             textExpenses.setText("Nicio cheltuiala pentru " + selectedMonth + " " + selectedYear);
                             groupedExpensesList.clear();
                             adapter.notifyDataSetChanged();

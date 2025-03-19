@@ -15,9 +15,19 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
     private List<Expense> expenseList;
     private Context context;
 
+    private OnItemLongClickListener longClickListener;
+
+    public interface OnItemLongClickListener {
+        void onItemLongClicked(int position);
+    }
+
     public ExpenseListAdapter(List<Expense> expenseList, Context context) {
         this.expenseList = expenseList;
         this.context = context;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     //update la lista de expenses
@@ -39,6 +49,14 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
         Expense expense = expenseList.get(position);
         holder.textExpenseName.setText(expense.getName());
         holder.textExpenseSum.setText(String.format("%.2f RON", expense.getSum()));
+
+        // delete expense cu long-press
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onItemLongClicked(position);
+            }
+            return true;
+        });
     }
 
     @Override
