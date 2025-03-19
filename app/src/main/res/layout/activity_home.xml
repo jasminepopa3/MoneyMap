@@ -6,6 +6,9 @@
     android:background="@color/black"
     android:padding="16dp">
 
+    <!-- Include the Toolbar -->
+    <include layout="@layout/toolbar" />
+
     <!-- Calendar -->
     <CalendarView
         android:id="@+id/calendarView"

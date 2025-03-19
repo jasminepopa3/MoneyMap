@@ -3,11 +3,14 @@ package com.example.moneymap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +36,10 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
         // Referințe la elementele din layout
         Button buttonAddCategory = findViewById(R.id.buttonAddCategory);
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories);
+
+        // Set up the Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ToolbarUtils.setupToolbar(this, toolbar);
 
         // Configurează RecyclerView
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this));
@@ -135,5 +142,37 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    //meniu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_profile) {
+            //profile click
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_logout) {
+            // Logout click
+            Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
+            logout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
