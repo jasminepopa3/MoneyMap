@@ -11,20 +11,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:layout_marginBottom="16sp"
         android:textStyle="bold"
         android:text="Category Expenses" />
 
-    <Spinner
-        android:id="@+id/spinner_month"
-        android:layout_width="wrap_content"
+    <!-- Month and Year Selection Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
 
-    <Spinner
-        android:id="@+id/spinner_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"/>
+        <!-- Dropdown for Month Selection -->
+        <Spinner
+            android:id="@+id/spinner_month"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <!-- Dropdown for Year Selection -->
+        <Spinner
+            android:id="@+id/spinner_year"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:padding="8dp"
+            android:layout_marginStart="4dp"/>
+
+        <TextView
+            android:id="@+id/text_empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nu exista cheltuieli pentru data selectata."
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:gravity="left"
+            android:visibility="gone"
+            android:layout_marginBottom="25sp"
+        android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_expenses"

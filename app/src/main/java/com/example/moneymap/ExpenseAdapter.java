@@ -116,7 +116,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     public void updateSelectedDate(String selectedMonth, String selectedYear) {
         this.selectedMonth = selectedMonth;
         this.selectedYear = selectedYear;
-        notifyDataSetChanged(); // Notify the adapter to refresh the data
+        //update la lista de grouped expenses cand se schimba data/anul
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

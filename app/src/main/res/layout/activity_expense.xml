@@ -6,7 +6,6 @@
     android:background="@color/black"
     android:padding="16dp">
 
-    <!-- Expenses Title -->
     <TextView
         android:id="@+id/expenses_title"
         android:layout_width="match_parent"
@@ -73,4 +72,12 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="8dp"/>
+
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 </LinearLayout>

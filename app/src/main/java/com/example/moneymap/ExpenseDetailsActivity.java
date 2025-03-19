@@ -27,7 +27,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
     private ExpenseListAdapter adapter;
     private List<Expense> expenseList;
     private String categoryName;
-    private TextView textCategoryTitle;
+    private TextView textCategoryTitle,textEmptyState;
 
     private String selectedMonth;
     private String selectedYear;
@@ -41,6 +41,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recycler_view_expenses);
         textCategoryTitle = findViewById(R.id.text_category_title);
+        textEmptyState=findViewById(R.id.text_empty_state);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         spinnerMonth = findViewById(R.id.spinner_month);
@@ -60,7 +61,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonth.setAdapter(monthAdapter);
 
-        // Initialize the year spinner
+        // spinner pentru luna si an
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         List<String> years = new ArrayList<>();
         for (int year = currentYear - 2; year <= currentYear + 5; year++) {
@@ -75,7 +76,6 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYear.setAdapter(yearAdapter);
 
-        // Set initial values for the spinners
         if (selectedMonth != null) {
             int monthIndex = monthAdapter.getPosition(selectedMonth);
             spinnerMonth.setSelection(monthIndex);
@@ -92,7 +92,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             }
         }
 
-        textCategoryTitle.setText("Cheltuieli pentru " + categoryName);
+        textCategoryTitle.setText("Cheltuieli pentru " + categoryName+ " - "+selectedMonth+" "+selectedYear);
 
         adapter = new ExpenseListAdapter(expenseList, this);
         recyclerView.setAdapter(adapter);
@@ -109,7 +109,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // nimic
             }
         });
 
@@ -125,7 +125,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // nimic
             }
         });
     }
@@ -136,9 +136,9 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Fetch expenses for the selected category, month, and year
+            // fretch la expenses dupa categoryId si luna/anul selectat de user
             db.collection("users").document(userId).collection("expenses")
-                    .whereEqualTo("categoryId", categoryId) // Use categoryId instead of categoryName
+                    .whereEqualTo("categoryId", categoryId)
                     .whereEqualTo("month", selectedMonth)
                     .whereEqualTo("year", selectedYear)
                     .get()
@@ -149,15 +149,25 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                             double sum = document.getDouble("sum");
                             String month = document.getString("month");
                             String year = document.getString("year");
-                            String categoryId = document.getString("categoryId"); // Ensure this field exists in Firestore
+                            String categoryId = document.getString("categoryId");
                             updatedExpenseList.add(new Expense(name, sum, month, year));
                         }
 
-                        // Update the adapter with the new list of expenses
+                        // update la adapter cu noua lista de expenses
                         adapter.updateExpenses(updatedExpenseList);
                         adapter.notifyDataSetChanged();
 
-                        // Update the title to reflect the selected month and year
+                        // verificam daca lista e goala
+                        if (updatedExpenseList.isEmpty()) {
+                            textEmptyState.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            textEmptyState.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+
+
+                        // update la titlu pentru schimbarea lunii/anului
                         textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedMonth + " " + selectedYear);
                     })
                     .addOnFailureListener(e -> {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import java.util.Set;
 
 public class ExpenseActivity extends AppCompatActivity {
     private Spinner spinnerMonth, spinnerYear;
+    private ProgressBar progressBar;
     private TextView textExpenses;
     private Button buttonAddExpense;
     private List<GroupedExpense> groupedExpensesList = new ArrayList<>();
@@ -39,6 +41,7 @@ public class ExpenseActivity extends AppCompatActivity {
     private ExpenseAdapter adapter;
     private String selectedMonth, selectedYear;
     private Map<String, Category> categoryCache = new HashMap<>();
+
 
 
     private ActivityResultLauncher<Intent> addExpenseLauncher;
@@ -53,6 +56,7 @@ public class ExpenseActivity extends AppCompatActivity {
         spinnerYear = findViewById(R.id.spinner_year);
         textExpenses = findViewById(R.id.text_expenses);
         buttonAddExpense = findViewById(R.id.button_add_expense);
+        progressBar = findViewById(R.id.progress_bar); // Initialize ProgressBar
 
 
         // launcher
@@ -161,6 +165,10 @@ public class ExpenseActivity extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
+            // loading bar
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            textExpenses.setVisibility(View.GONE);
 
             db.collection("users").document(userId).collection("categories")
                     .get()
@@ -181,19 +189,26 @@ public class ExpenseActivity extends AppCompatActivity {
                         updateExpenses();
                     })
                     .addOnFailureListener(e -> {
+
                         Log.e("Firestore", "Error loading categories", e);
                         Toast.makeText(this, "Error loading categories", Toast.LENGTH_SHORT).show();
+                        //hide loading bar
+                        progressBar.setVisibility(View.GONE);
+                        textExpenses.setVisibility(View.VISIBLE);
+                        textExpenses.setText("Eroare la incarcarea categoriilor");
                     });
         }
     }
 
     private void updateExpenses() {
-        textExpenses.setText("Se afiseaza cheltuielile pentru " + selectedMonth + " " + selectedYear + "...");
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
+            //loading bar
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            textExpenses.setVisibility(View.GONE);
 
             db.collection("users").document(userId).collection("expenses")
                     .whereEqualTo("month", selectedMonth)
@@ -242,14 +257,24 @@ public class ExpenseActivity extends AppCompatActivity {
                         adapter.updateSelectedDate(selectedMonth, selectedYear); // Update cu luna si anul selectat
                         adapter.notifyDataSetChanged();
 
+                        //hide loading bar
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        textExpenses.setVisibility(View.VISIBLE);
                         textExpenses.setText("Cheltuieli pentru " + selectedMonth + " " + selectedYear);
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error loading expenses", e);
                         textExpenses.setText("Eroare la afisarea cheltuielilor");
+                        //hide loading bar
+                        progressBar.setVisibility(View.GONE);
+                        textExpenses.setVisibility(View.VISIBLE);
                     });
         } else {
             textExpenses.setText("User-ul nu este logat");
+            //hide loading bar
+            progressBar.setVisibility(View.GONE);
+            textExpenses.setVisibility(View.VISIBLE);
         }
     }
 
