@@ -2,6 +2,7 @@ package com.example.moneymap;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.Serializable;
-
-
 import java.util.List;
 
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder> {
@@ -29,14 +28,12 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     private String selectedYear;
     private ActivityResultLauncher<Intent> detailsLauncher;
 
-
-    public ExpenseAdapter(List<GroupedExpense> groupedExpenses, Context context, String selectedMonth, String selectedYear,ActivityResultLauncher<Intent> detailsLauncher) {
+    public ExpenseAdapter(List<GroupedExpense> groupedExpenses, Context context, String selectedMonth, String selectedYear, ActivityResultLauncher<Intent> detailsLauncher) {
         this.groupedExpenses = groupedExpenses;
         this.context = context;
         this.selectedMonth = selectedMonth;
         this.selectedYear = selectedYear;
         this.detailsLauncher = detailsLauncher;
-
     }
 
     @NonNull
@@ -53,6 +50,19 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
 
         holder.textCategory.setText(category.getName());
 
+        // Set the category color indicator
+        if (category.getColor() != null && !category.getColor().isEmpty()) {
+            try {
+                holder.categoryColorIndicator.setBackgroundColor(Color.parseColor(category.getColor()));
+            } catch (IllegalArgumentException e) {
+                // Fallback to default color if parsing fails
+                holder.categoryColorIndicator.setBackgroundColor(Color.GRAY);
+                Log.e("ExpenseAdapter", "Error parsing color: " + category.getColor(), e);
+            }
+        } else {
+            holder.categoryColorIndicator.setBackgroundColor(Color.GRAY);
+        }
+
         // data pentru buget
         fetchBudgetData(holder, category, groupedExpense.getTotalExpense());
 
@@ -60,14 +70,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, ExpenseDetailsActivity.class);
             intent.putExtra("expenseList", (Serializable) groupedExpense.getExpenses());
-            intent.putExtra("categoryId",category.getId());
-            intent.putExtra(("categoryName"),category.getName());
-            intent.putExtra(("selectedMonth"),selectedMonth);
-            intent.putExtra(("selectedYear"),selectedYear);
+            intent.putExtra("categoryId", category.getId());
+            intent.putExtra("categoryName", category.getName());
+            intent.putExtra("selectedMonth", selectedMonth);
+            intent.putExtra("selectedYear", selectedYear);
             detailsLauncher.launch(intent);
         });
     }
-
 
     private void fetchBudgetData(ViewHolder holder, Category category, double totalExpense) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -96,19 +105,16 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
                                     holder.textTotalAndBudget.setText(String.format("%.2f RON", totalExpense));
                                     holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
                                     holder.progressBarPercentage.setProgress(0);
-
                                 }
                             } else {
                                 holder.textTotalAndBudget.setText(String.format("%.2f RON", totalExpense));
                                 holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
                                 holder.progressBarPercentage.setProgress(0);
-
                             }
                         } else {
                             holder.textTotalAndBudget.setText(String.format("%.2f RON", totalExpense));
                             holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
                             holder.progressBarPercentage.setProgress(0);
-
                         }
                     })
                     .addOnFailureListener(e -> {
@@ -135,6 +141,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textCategory, textTotalAndBudget, textPercentageDifference;
         ProgressBar progressBarPercentage;
+        View categoryColorIndicator;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -142,7 +149,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
             textTotalAndBudget = itemView.findViewById(R.id.text_total_and_budget);
             textPercentageDifference = itemView.findViewById(R.id.text_budget_percentage);
             progressBarPercentage = itemView.findViewById(R.id.progress_bar_percentage);
-
+            categoryColorIndicator = itemView.findViewById(R.id.category_color_indicator);
         }
     }
 }
