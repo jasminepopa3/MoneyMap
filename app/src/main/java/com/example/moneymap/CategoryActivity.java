@@ -156,12 +156,13 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
         int id = item.getItemId();
 
         if (id == R.id.action_profile) {
-            // profile click
-            Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show();
+            //profile click
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_logout) {
             // Logout click
-            Toast.makeText(this, "Logout clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
             logout();
             return true;
         }
