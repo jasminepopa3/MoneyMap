@@ -265,9 +265,25 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (ToolbarUtils.handleOptionsItemSelected(this, item)) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_profile) {
+            //Profile click
+            Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_logout) {
+            //Logout click
+            Toast.makeText(this, "Logout clicked", Toast.LENGTH_SHORT).show();
+            logout();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

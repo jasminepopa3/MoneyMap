@@ -3,6 +3,15 @@
     <item
         android:id="@+id/action_account"
         android:icon="@drawable/ic_account"
-        android:title="Account"
-        app:showAsAction="always" />
-</menu>
+    android:title="Account"
+    app:showAsAction="always">
+    <menu>
+        <item
+            android:id="@+id/action_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/action_logout"
+            android:title="Logout" />
+    </menu>
+</item>
+    </menu>
