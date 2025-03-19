@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,7 +47,6 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         Category category = groupedExpense.getCategory();
 
         holder.textCategory.setText(category.getName());
-        holder.textTotalExpense.setText(String.format("Total: %.2f RON", groupedExpense.getTotalExpense()));
 
         // data pentru buget
         fetchBudgetData(holder, category, groupedExpense.getTotalExpense());
@@ -79,31 +79,35 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
                             //verificam daca bugetul exista pentru user cu luna si anul selectat
                             Double budgetValue = documentSnapshot.getDouble("budget");
                             if (budgetValue != null) {
-                                holder.textCategoryBudget.setText(String.format("Buget: %.2f RON", budgetValue));
+                                holder.textTotalAndBudget.setText(String.format("%.2f/%.2f RON", totalExpense, budgetValue));
 
                                 //calculare procent
                                 if (budgetValue != 0) {
                                     double percentage = 100 * totalExpense / budgetValue;
-                                    holder.textPercentageDifference.setText(String.format("Consumat: %.2f%%", percentage));
+                                    holder.textPercentageDifference.setText(String.format("%.2f%%", percentage));
+                                    holder.progressBarPercentage.setProgress((int) percentage);
+
                                 } else {
                                     holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
+                                    holder.progressBarPercentage.setProgress(0);
+
                                 }
                             } else {
-                                holder.textCategoryBudget.setText("Buget: 0.00 RON");
                                 holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
+                                holder.progressBarPercentage.setProgress(0);
+
                             }
                         } else {
-                            holder.textCategoryBudget.setText("Buget: 0.00 RON");
                             holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
+                            holder.progressBarPercentage.setProgress(0);
+
                         }
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error fetching budget data", e);
-                        holder.textCategoryBudget.setText("Buget: 0.00 RON");
                         holder.textPercentageDifference.setText("Eroare la incarcarea bugetului");
                     });
         } else {
-            holder.textCategoryBudget.setText("Buget: 0.00 RON");
             holder.textPercentageDifference.setText("Utilizatorul nu este autentificat");
         }
     }
@@ -121,14 +125,16 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textCategory, textTotalExpense, textCategoryBudget, textPercentageDifference;
+        TextView textCategory, textTotalAndBudget, textPercentageDifference;
+        ProgressBar progressBarPercentage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textCategory = itemView.findViewById(R.id.text_category_name);
-            textTotalExpense = itemView.findViewById(R.id.text_total_expense);
-            textCategoryBudget = itemView.findViewById(R.id.text_category_budget);
+            textTotalAndBudget = itemView.findViewById(R.id.text_total_and_budget);
             textPercentageDifference = itemView.findViewById(R.id.text_budget_percentage);
+            progressBarPercentage = itemView.findViewById(R.id.progress_bar_percentage);
+
         }
     }
 }
