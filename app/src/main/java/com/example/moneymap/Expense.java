@@ -7,13 +7,16 @@ public class Expense implements Serializable {
     private double sum;
     private String month;
     private String year;
+    private String day;
 
 
-    public Expense(String name, double sum, String month, String year) {
+
+    public Expense(String name, double sum, String day, String month, String year) {
         this.name = name;
         this.sum = sum;
         this.month = month;
         this.year = year;
+        this.day=day;
     }
 
     // Getters and Setters
@@ -31,6 +34,14 @@ public class Expense implements Serializable {
 
     public String getYear() {
         return year;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 
     @Override

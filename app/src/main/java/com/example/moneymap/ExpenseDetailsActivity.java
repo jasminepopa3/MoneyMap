@@ -6,9 +6,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +30,13 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
     private ExpenseListAdapter adapter;
     private List<Expense> expenseList;
     private String categoryName;
-    private TextView textCategoryTitle,textEmptyState;
+    private TextView textCategoryTitle, textEmptyState;
 
-    private String selectedMonth;
+    private CalendarView calendarView;
+    private Button buttonShowMonthExpenses;
+    private String selectedDay;
+    private String selectedMonth; // Romanian month name
     private String selectedYear;
-    private Spinner spinnerMonth, spinnerYear;
     private String categoryId;
 
     @Override
@@ -49,59 +50,38 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recycler_view_expenses);
         textCategoryTitle = findViewById(R.id.text_category_title);
-        textEmptyState=findViewById(R.id.text_empty_state);
+        textEmptyState = findViewById(R.id.text_empty_state);
+        calendarView = findViewById(R.id.calendarView);
+        buttonShowMonthExpenses = findViewById(R.id.button_show_month_expenses);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        spinnerMonth = findViewById(R.id.spinner_month);
-        spinnerYear = findViewById(R.id.spinner_year);
-
         categoryName = getIntent().getStringExtra("categoryName");
-        categoryId=getIntent().getStringExtra("categoryId");
-        expenseList = (List<Expense>) getIntent().getSerializableExtra("expenseList");
-        selectedMonth=getIntent().getStringExtra("selectedMonth");
-        selectedYear=getIntent().getStringExtra("selectedYear");
+        categoryId = getIntent().getStringExtra("categoryId");
 
-        ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.months,
-                android.R.layout.simple_spinner_item
-        );
-        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMonth.setAdapter(monthAdapter);
+        // Initialize selected date to today's date
+        Calendar calendar = Calendar.getInstance();
+        selectedDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1); // Convert to Romanian month name
+        selectedYear = String.valueOf(calendar.get(Calendar.YEAR));
 
-        // spinner pentru luna si an
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        List<String> years = new ArrayList<>();
-        for (int year = currentYear - 2; year <= currentYear + 5; year++) {
-            years.add(String.valueOf(year));
-        }
+        // Set initial title
+        textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedDay + " " + selectedMonth + " " + selectedYear);
 
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                years
-        );
-        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerYear.setAdapter(yearAdapter);
+        // Set up CalendarView listener
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            // Update the selected day, month, and year
+            selectedDay = String.valueOf(dayOfMonth);
+            selectedMonth = getRomanianMonthName(month + 1); // Convert to Romanian month name
+            selectedYear = String.valueOf(year);
 
-        if (selectedMonth != null) {
-            int monthIndex = monthAdapter.getPosition(selectedMonth);
-            spinnerMonth.setSelection(monthIndex);
-        }
+            // Update title and fetch expenses for the selected date
+            textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedDay + " " + selectedMonth + " " + selectedYear);
+            fetchExpensesForCategory();
+        });
 
-        if (selectedYear != null) {
-            int yearIndex = yearAdapter.getPosition(selectedYear);
-            spinnerYear.setSelection(yearIndex);
-        }
-
-        if (expenseList != null) {
-            for (Expense expense : expenseList) {
-                Log.d("ExpenseDetails", "Cheltuieli: " + expense.getName() + " - " + expense.getSum());
-            }
-        }
-
-        textCategoryTitle.setText("Cheltuieli pentru " + categoryName+ " - "+selectedMonth+" "+selectedYear);
-
+        // Initialize adapter
+        expenseList = new ArrayList<>();
         adapter = new ExpenseListAdapter(expenseList, this);
         recyclerView.setAdapter(adapter);
 
@@ -110,37 +90,20 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             deleteExpense(expenseToDelete, position);
         });
 
-        spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String newMonth = parent.getItemAtPosition(position).toString();
-                if (!newMonth.equals(selectedMonth)) {
-                    selectedMonth = newMonth;
-                    fetchExpensesForCategory();
-                }
-            }
+        // Set up button to show expenses for the entire month
+        buttonShowMonthExpenses.setOnClickListener(v -> fetchExpensesForMonth());
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // nimic
-            }
-        });
+        // Fetch expenses for the initial date
+        fetchExpensesForCategory();
+    }
 
-        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String newYear = parent.getItemAtPosition(position).toString();
-                if (!newYear.equals(selectedYear)) {
-                    selectedYear = newYear;
-                    fetchExpensesForCategory();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // nimic
-            }
-        });
+    // Helper method to get Romanian month name
+    private String getRomanianMonthName(int month) {
+        String[] romanianMonths = {
+                "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
+                "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"
+        };
+        return romanianMonths[month - 1]; // Subtract 1 because array is 0-based
     }
 
     private void fetchExpensesForCategory() {
@@ -149,49 +112,134 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // fretch la expenses dupa categoryId si luna/anul selectat de user
+            // Debugging: Log the selected date and categoryId
+            Log.d("ExpenseDetails", "Fetching expenses for categoryId: " + categoryId);
+            Log.d("ExpenseDetails", "Selected date: Day=" + selectedDay + ", Month=" + selectedMonth + ", Year=" + selectedYear);
+
+            // Fetch expenses based on categoryId, day, month (Romanian name), and year
             db.collection("users").document(userId).collection("expenses")
                     .whereEqualTo("categoryId", categoryId)
-                    .whereEqualTo("month", selectedMonth)
+                    .whereEqualTo("day", selectedDay)
+                    .whereEqualTo("month", selectedMonth) // Use Romanian month name
                     .whereEqualTo("year", selectedYear)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
+                        // Debugging: Log the number of documents fetched
+                        Log.d("ExpenseDetails", "Number of expenses fetched: " + queryDocumentSnapshots.size());
+
                         List<Expense> updatedExpenseList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             String name = document.getString("name");
                             double sum = document.getDouble("sum");
-                            String month = document.getString("month");
+                            String day = document.getString("day");
+                            String month = document.getString("month"); // Romanian month name
                             String year = document.getString("year");
-                            String categoryId = document.getString("categoryId");
-                            updatedExpenseList.add(new Expense(name, sum, month, year));
+
+                            // Debugging: Log each expense fetched
+                            Log.d("ExpenseDetails", "Expense fetched: " + name + ", " + sum + ", " + day + "/" + month + "/" + year);
+
+                            updatedExpenseList.add(new Expense(name, sum, day, month, year));
                         }
 
-                        // update la adapter cu noua lista de expenses
+                        // Debugging: Log the size of the updated expense list
+                        Log.d("ExpenseDetails", "Updated expense list size: " + updatedExpenseList.size());
+
+                        // Update adapter with the new list of expenses
                         adapter.updateExpenses(updatedExpenseList);
                         adapter.notifyDataSetChanged();
 
-                        // verificam daca lista e goala
+                        // Check if the list is empty
                         if (updatedExpenseList.isEmpty()) {
+                            Log.d("ExpenseDetails", "No expenses found for the selected date.");
                             textEmptyState.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
+                            Log.d("ExpenseDetails", "Expenses found. Updating UI.");
                             textEmptyState.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
-
-
-                        // update la titlu pentru schimbarea lunii/anului
-                        textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedMonth + " " + selectedYear);
                     })
                     .addOnFailureListener(e -> {
+                        // Debugging: Log the error
                         Log.e("Firestore", "Error fetching expenses", e);
                         Toast.makeText(this, "Eroare la incarcarea cheltuielilor", Toast.LENGTH_SHORT).show();
                     });
+        } else {
+            // Debugging: Log if the user is not authenticated
+            Log.e("ExpenseDetails", "User is not authenticated.");
+            Toast.makeText(this, "User-ul nu e autentificat", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void fetchExpensesForMonth() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Debugging: Log the selected month and year
+            Log.d("ExpenseDetails", "Fetching expenses for categoryId: " + categoryId);
+            Log.d("ExpenseDetails", "Selected month: " + selectedMonth + ", Year: " + selectedYear);
+
+            // Fetch expenses based on categoryId, month (Romanian name), and year
+            db.collection("users").document(userId).collection("expenses")
+                    .whereEqualTo("categoryId", categoryId)
+                    .whereEqualTo("month", selectedMonth) // Use Romanian month name
+                    .whereEqualTo("year", selectedYear)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        // Debugging: Log the number of documents fetched
+                        Log.d("ExpenseDetails", "Number of expenses fetched: " + queryDocumentSnapshots.size());
+
+
+                        textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - "+ selectedMonth + " " + selectedYear);
+
+                        List<Expense> updatedExpenseList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            String name = document.getString("name");
+                            double sum = document.getDouble("sum");
+                            String day = document.getString("day");
+                            String month = document.getString("month"); // Romanian month name
+                            String year = document.getString("year");
+
+                            // Debugging: Log each expense fetched
+                            Log.d("ExpenseDetails", "Expense fetched: " + name + ", " + sum + ", " + day + "/" + month + "/" + year);
+
+                            updatedExpenseList.add(new Expense(name, sum, day, month, year));
+                        }
+
+                        // Debugging: Log the size of the updated expense list
+                        Log.d("ExpenseDetails", "Updated expense list size: " + updatedExpenseList.size());
+
+                        // Update adapter with the new list of expenses
+                        adapter.updateExpenses(updatedExpenseList);
+                        adapter.notifyDataSetChanged();
+
+                        // Check if the list is empty
+                        if (updatedExpenseList.isEmpty()) {
+                            Log.d("ExpenseDetails", "No expenses found for the selected month.");
+                            textEmptyState.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            Log.d("ExpenseDetails", "Expenses found. Updating UI.");
+                            textEmptyState.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Debugging: Log the error
+                        Log.e("Firestore", "Error fetching expenses", e);
+                        Toast.makeText(this, "Eroare la incarcarea cheltuielilor", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            // Debugging: Log if the user is not authenticated
+            Log.e("ExpenseDetails", "User is not authenticated.");
+            Toast.makeText(this, "User-ul nu e autentificat", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void deleteExpense(Expense expense, int position) {
-        //pop-up pentru confirmarea stergerii
+        // Pop-up for confirmation
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setTitle("Confirma stergerea cheltuielii");
         builder.setMessage("Esti sigur ca vrei sa stergi cheltuiala inregistrata?\n\n" +
@@ -209,7 +257,6 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // delete cheltuiala
     private void proceedWithDeletion(Expense expense, int position) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -219,7 +266,8 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             db.collection("users").document(userId).collection("expenses")
                     .whereEqualTo("name", expense.getName())
                     .whereEqualTo("sum", expense.getSum())
-                    .whereEqualTo("month", expense.getMonth())
+                    .whereEqualTo("day", expense.getDay())
+                    .whereEqualTo("month", expense.getMonth()) // Romanian month name
                     .whereEqualTo("year", expense.getYear())
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -228,13 +276,13 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                                     .document(document.getId())
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
-                                        // stergem ob din lista si update adapter
+                                        // Remove the expense from the list and update the adapter
                                         expenseList.remove(position);
                                         adapter.notifyItemRemoved(position);
 
                                         Toast.makeText(this, "Cheltuiala stearsa", Toast.LENGTH_SHORT).show();
 
-                                        // daca grouped expense devine goala dam update
+                                        // If the list becomes empty, update the UI
                                         if (expenseList.isEmpty()) {
                                             textEmptyState.setVisibility(View.VISIBLE);
                                             recyclerView.setVisibility(View.GONE);
@@ -256,7 +304,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         }
     }
 
-    //meniu
+    // Meniu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -268,12 +316,12 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_profile) {
-            //Profile click
+            // Profile click
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
             return true;
         } else if (id == R.id.action_logout) {
-            //Logout click
+            // Logout click
             Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
             logout();
             return true;
