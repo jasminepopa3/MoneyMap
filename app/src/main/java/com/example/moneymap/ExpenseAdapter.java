@@ -84,25 +84,28 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
                             //verificam daca bugetul exista pentru user cu luna si anul selectat
                             Double budgetValue = documentSnapshot.getDouble("budget");
                             if (budgetValue != null) {
-                                holder.textTotalAndBudget.setText(String.format("%.2f/%.2f RON", totalExpense, budgetValue));
 
                                 //calculare procent
                                 if (budgetValue != 0) {
+                                    holder.textTotalAndBudget.setText(String.format("%.2f/%.2f RON", totalExpense, budgetValue));
                                     double percentage = 100 * totalExpense / budgetValue;
                                     holder.textPercentageDifference.setText(String.format("%.2f%%", percentage));
                                     holder.progressBarPercentage.setProgress((int) percentage);
 
                                 } else {
+                                    holder.textTotalAndBudget.setText(String.format("%.2f RON", totalExpense));
                                     holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
                                     holder.progressBarPercentage.setProgress(0);
 
                                 }
                             } else {
+                                holder.textTotalAndBudget.setText(String.format("%.2f RON", totalExpense));
                                 holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
                                 holder.progressBarPercentage.setProgress(0);
 
                             }
                         } else {
+                            holder.textTotalAndBudget.setText(String.format("%.2f RON", totalExpense));
                             holder.textPercentageDifference.setText("Bugetul pentru aceasta categorie nu a fost setat");
                             holder.progressBarPercentage.setProgress(0);
 
