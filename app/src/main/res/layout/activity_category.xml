@@ -6,6 +6,9 @@
     android:padding="16dp"
     android:background="@color/white">
 
+    <!-- Include the Toolbar -->
+    <include layout="@layout/toolbar" />
+
     <!-- Titlul mare pe mijloc sus -->
     <TextView
         android:id="@+id/textViewTitle"
