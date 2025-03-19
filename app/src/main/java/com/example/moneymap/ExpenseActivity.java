@@ -239,6 +239,7 @@ public class ExpenseActivity extends AppCompatActivity {
 
                         groupedExpensesList.clear();
                         groupedExpensesList.addAll(groupedExpenses.values());
+                        adapter.updateSelectedDate(selectedMonth, selectedYear); // Update cu luna si anul selectat
                         adapter.notifyDataSetChanged();
 
                         textExpenses.setText("Cheltuieli pentru " + selectedMonth + " " + selectedYear);

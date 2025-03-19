@@ -55,7 +55,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, ExpenseDetailsActivity.class);
             intent.putExtra("expenseList", (Serializable) groupedExpense.getExpenses());
+            intent.putExtra("categoryId",category.getId());
             intent.putExtra(("categoryName"),category.getName());
+            intent.putExtra(("selectedMonth"),selectedMonth);
+            intent.putExtra(("selectedYear"),selectedYear);
             context.startActivity(intent);
         });
     }
@@ -108,6 +111,12 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     @Override
     public int getItemCount() {
         return groupedExpenses.size();
+    }
+
+    public void updateSelectedDate(String selectedMonth, String selectedYear) {
+        this.selectedMonth = selectedMonth;
+        this.selectedYear = selectedYear;
+        notifyDataSetChanged(); // Notify the adapter to refresh the data
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

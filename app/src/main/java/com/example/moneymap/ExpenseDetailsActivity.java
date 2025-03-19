@@ -2,13 +2,24 @@ package com.example.moneymap;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ExpenseDetailsActivity extends AppCompatActivity {
@@ -17,6 +28,11 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
     private List<Expense> expenseList;
     private String categoryName;
     private TextView textCategoryTitle;
+
+    private String selectedMonth;
+    private String selectedYear;
+    private Spinner spinnerMonth, spinnerYear;
+    private String categoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +43,48 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         textCategoryTitle = findViewById(R.id.text_category_title);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        spinnerMonth = findViewById(R.id.spinner_month);
+        spinnerYear = findViewById(R.id.spinner_year);
+
         categoryName = getIntent().getStringExtra("categoryName");
+        categoryId=getIntent().getStringExtra("categoryId");
         expenseList = (List<Expense>) getIntent().getSerializableExtra("expenseList");
+        selectedMonth=getIntent().getStringExtra("selectedMonth");
+        selectedYear=getIntent().getStringExtra("selectedYear");
+
+        ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.months,
+                android.R.layout.simple_spinner_item
+        );
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMonth.setAdapter(monthAdapter);
+
+        // Initialize the year spinner
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        List<String> years = new ArrayList<>();
+        for (int year = currentYear - 2; year <= currentYear + 5; year++) {
+            years.add(String.valueOf(year));
+        }
+
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                years
+        );
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+        // Set initial values for the spinners
+        if (selectedMonth != null) {
+            int monthIndex = monthAdapter.getPosition(selectedMonth);
+            spinnerMonth.setSelection(monthIndex);
+        }
+
+        if (selectedYear != null) {
+            int yearIndex = yearAdapter.getPosition(selectedYear);
+            spinnerYear.setSelection(yearIndex);
+        }
 
         if (expenseList != null) {
             for (Expense expense : expenseList) {
@@ -40,5 +96,74 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
 
         adapter = new ExpenseListAdapter(expenseList, this);
         recyclerView.setAdapter(adapter);
+
+        spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String newMonth = parent.getItemAtPosition(position).toString();
+                if (!newMonth.equals(selectedMonth)) {
+                    selectedMonth = newMonth;
+                    fetchExpensesForCategory();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String newYear = parent.getItemAtPosition(position).toString();
+                if (!newYear.equals(selectedYear)) {
+                    selectedYear = newYear;
+                    fetchExpensesForCategory();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+    }
+
+    private void fetchExpensesForCategory() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Fetch expenses for the selected category, month, and year
+            db.collection("users").document(userId).collection("expenses")
+                    .whereEqualTo("categoryId", categoryId) // Use categoryId instead of categoryName
+                    .whereEqualTo("month", selectedMonth)
+                    .whereEqualTo("year", selectedYear)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<Expense> updatedExpenseList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            String name = document.getString("name");
+                            double sum = document.getDouble("sum");
+                            String month = document.getString("month");
+                            String year = document.getString("year");
+                            String categoryId = document.getString("categoryId"); // Ensure this field exists in Firestore
+                            updatedExpenseList.add(new Expense(name, sum, month, year));
+                        }
+
+                        // Update the adapter with the new list of expenses
+                        adapter.updateExpenses(updatedExpenseList);
+                        adapter.notifyDataSetChanged();
+
+                        // Update the title to reflect the selected month and year
+                        textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedMonth + " " + selectedYear);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error fetching expenses", e);
+                        Toast.makeText(this, "Eroare la incarcarea cheltuielilor", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 }
