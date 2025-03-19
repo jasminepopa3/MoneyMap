@@ -37,6 +37,12 @@
 
         <activity android:name=".LoginActivity" />
 
+        <activity android:name=".ExpenseActivity" />
+
+        <activity android:name=".AddExpenseActivity"/>
+
+        <activity android:name=".ExpenseDetailsActivity"/>
+
 
     </application>
 
