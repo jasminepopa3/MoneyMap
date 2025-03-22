@@ -136,7 +136,7 @@ public class ExpenseActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String newMonth = parent.getItemAtPosition(position).toString();
-                if (!newMonth.equals(selectedMonth)) { // Ensure it's a new selection
+                if (!newMonth.equals(selectedMonth)) {
                     selectedMonth = newMonth;
                     updateExpenses();
                 }

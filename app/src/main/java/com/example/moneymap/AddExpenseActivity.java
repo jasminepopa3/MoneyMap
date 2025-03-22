@@ -1,5 +1,7 @@
 package com.example.moneymap;
 
+import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddExpenseActivity extends AppCompatActivity {
 
@@ -31,9 +34,9 @@ public class AddExpenseActivity extends AppCompatActivity {
     private CalendarView calendarView;
     private List<Category> categories = new ArrayList<>();
 
-    private String selectedMonth; // Existing variable (now stores Romanian month name)
-    private String selectedYear;  // Existing variable
-    private String selectedDay;   // New variable for day
+    private String selectedMonth;
+    private String selectedYear;
+    private String selectedDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +51,14 @@ public class AddExpenseActivity extends AppCompatActivity {
         buttonCancel = findViewById(R.id.button_cancel);
         calendarView = findViewById(R.id.calendarView);
 
-        // Set the initial selected date to today's date
         Calendar calendar = Calendar.getInstance();
         selectedDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1); // Convert to Romanian month name
+        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1);
         selectedYear = String.valueOf(calendar.get(Calendar.YEAR));
 
-        // Set a listener for date selection
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            // Update the selected day, month, and year
             selectedDay = String.valueOf(dayOfMonth);
-            selectedMonth = getRomanianMonthName(month + 1); // Convert to Romanian month name
+            selectedMonth = getRomanianMonthName(month + 1);
             selectedYear = String.valueOf(year);
         });
 
@@ -69,13 +69,12 @@ public class AddExpenseActivity extends AppCompatActivity {
         buttonCancel.setOnClickListener(v -> finish());
     }
 
-    // Helper method to get Romanian month name
     private String getRomanianMonthName(int month) {
         String[] romanianMonths = {
                 "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
                 "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"
         };
-        return romanianMonths[month - 1]; // Subtract 1 because array is 0-based
+        return romanianMonths[month - 1];
     }
 
     private void loadCategories() {
@@ -107,10 +106,8 @@ public class AddExpenseActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Set category adapter
                         ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
                         spinnerCategory.setAdapter(categoryAdapter);
-                        // Set the initial selection to the dummy item
                         spinnerCategory.setSelection(0);
                     })
                     .addOnFailureListener(e -> {
@@ -134,6 +131,11 @@ public class AddExpenseActivity extends AppCompatActivity {
             Toast.makeText(this, "Completati toate campurile", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(selectedCategory==spinnerCategory.getItemAtPosition(0))
+        {
+            Toast.makeText(this, "Alegeti o categorie valida!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Float sum;
         try {
@@ -147,29 +149,30 @@ public class AddExpenseActivity extends AppCompatActivity {
             return;
         }
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Map the expense object with its attributes
+            // mapam variabilele cu atr din db
             Map<String, Object> expense = new HashMap<>();
             expense.put("categoryId", selectedCategory.getId());
             expense.put("name", name);
             expense.put("sum", sum);
-            expense.put("day", selectedDay); // Add the selected day
-            expense.put("month", selectedMonth); // Existing month (Romanian name)
-            expense.put("year", selectedYear); // Existing year
+            expense.put("day", selectedDay);
+            expense.put("month", selectedMonth);
+            expense.put("year", selectedYear);
             expense.put("timestamp", System.currentTimeMillis());
 
-            // Save the expense to the database
+            // salvam expense in db
             db.collection("users").document(userId).collection("expenses")
                     .add(expense)
                     .addOnSuccessListener(documentReference -> {
                         Log.d("Firestore", "Expense added successfully with ID: " + documentReference.getId());
                         Toast.makeText(this, "Cheltuiala a fost adaugata cu succes", Toast.LENGTH_SHORT).show();
 
-                        // Pass the expense object back to ExpenseActivity
+                        // pasam obiectul la ExpenseActivity
                         Expense newExpense = new Expense(name, sum, selectedDay, selectedMonth, selectedYear);
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("newExpense", newExpense);

@@ -35,7 +35,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
     private CalendarView calendarView;
     private Button buttonShowMonthExpenses;
     private String selectedDay;
-    private String selectedMonth; // Romanian month name
+    private String selectedMonth;
     private String selectedYear;
     private String categoryId;
 

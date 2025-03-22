@@ -37,4 +37,37 @@
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white" />
 
+    <!-- Spinner for month selection -->
+    <Spinner
+        android:id="@+id/spinner_month"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
+
+    <!-- Spinner for year selection -->
+    <Spinner
+        android:id="@+id/spinner_year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" />
+
+    <!-- Pie Chart -->
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="20dp" />
+
+    <!-- TextView to display "No expenses" message -->
+    <TextView
+        android:id="@+id/text_no_expenses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nicio cheltuiala pentru luna selectata."
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="25sp"/>
+
 </LinearLayout>
