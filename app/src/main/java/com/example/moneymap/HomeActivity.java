@@ -2,6 +2,7 @@ package com.example.moneymap;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -68,6 +69,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("HomeActivity", "onCreateOptionsMenu called");
+        ToolbarUtils.loadToolbarIcon(this, menu);
         return true;
     }
 
@@ -94,5 +97,14 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+
+    //refresh meniu
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("HomeActivity", "onResume called");
+        invalidateOptionsMenu();
     }
 }

@@ -305,6 +305,8 @@ public class ExpenseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("ExpenseActivity", "onCreateOptionsMenu called");
+        ToolbarUtils.loadToolbarIcon(this, menu); // Load the avatar icon
         return true;
     }
 
@@ -331,6 +333,14 @@ public class ExpenseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    //refresh meniu
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("ExpenseActivity", "onResume called");
+        invalidateOptionsMenu();
     }
 
 }

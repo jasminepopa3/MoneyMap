@@ -4,6 +4,9 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Include the Toolbar -->
+    <include layout="@layout/toolbar" />
+
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"

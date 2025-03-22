@@ -1,21 +1,40 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?android:attr/windowBackground">
 
-    <!-- Include the Toolbar -->
-    <include
-        layout="@layout/toolbar"
-        android:id="@+id/toolbar" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Profilul tau"
+        app:titleTextColor="@android:color/white" />
 
-    <!-- Profile content -->
-    <TextView
+    <!-- Display current avatar -->
+    <ImageView
+        android:id="@+id/current_avatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_account"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/darker_gray"
+        android:contentDescription="Current Avatar" />
+
+    <!-- Button to edit profile picture -->
+    <Button
+        android:id="@+id/button_edit_profile_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile Page"
-        android:textSize="24sp"
-        android:layout_marginTop="16dp" />
+        android:text="Edit Profile Picture"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

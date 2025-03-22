@@ -59,23 +59,22 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         categoryName = getIntent().getStringExtra("categoryName");
         categoryId = getIntent().getStringExtra("categoryId");
 
-        // Initialize selected date to today's date
+        //initializam data
         Calendar calendar = Calendar.getInstance();
         selectedDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1); // Convert to Romanian month name
+        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1);
         selectedYear = String.valueOf(calendar.get(Calendar.YEAR));
 
-        // Set initial title
+
         textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedDay + " " + selectedMonth + " " + selectedYear);
 
-        // Set up CalendarView listener
+        // calendar
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            // Update the selected day, month, and year
+            // update pentru selectiile user-ului
             selectedDay = String.valueOf(dayOfMonth);
-            selectedMonth = getRomanianMonthName(month + 1); // Convert to Romanian month name
+            selectedMonth = getRomanianMonthName(month + 1);
             selectedYear = String.valueOf(year);
 
-            // Update title and fetch expenses for the selected date
             textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedDay + " " + selectedMonth + " " + selectedYear);
             fetchExpensesForCategory();
         });
@@ -90,20 +89,19 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             deleteExpense(expenseToDelete, position);
         });
 
-        // Set up button to show expenses for the entire month
+        // buton expenses pentru toata luna
         buttonShowMonthExpenses.setOnClickListener(v -> fetchExpensesForMonth());
 
-        // Fetch expenses for the initial date
         fetchExpensesForCategory();
     }
 
-    // Helper method to get Romanian month name
+    // numele de luni in romana
     private String getRomanianMonthName(int month) {
         String[] romanianMonths = {
                 "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
                 "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"
         };
-        return romanianMonths[month - 1]; // Subtract 1 because array is 0-based
+        return romanianMonths[month - 1];
     }
 
     private void fetchExpensesForCategory() {
@@ -112,11 +110,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Debugging: Log the selected date and categoryId
-            Log.d("ExpenseDetails", "Fetching expenses for categoryId: " + categoryId);
-            Log.d("ExpenseDetails", "Selected date: Day=" + selectedDay + ", Month=" + selectedMonth + ", Year=" + selectedYear);
-
-            // Fetch expenses based on categoryId, day, month (Romanian name), and year
+            // fetch expenses din firebase
             db.collection("users").document(userId).collection("expenses")
                     .whereEqualTo("categoryId", categoryId)
                     .whereEqualTo("day", selectedDay)
@@ -124,49 +118,36 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                     .whereEqualTo("year", selectedYear)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        // Debugging: Log the number of documents fetched
-                        Log.d("ExpenseDetails", "Number of expenses fetched: " + queryDocumentSnapshots.size());
+
 
                         List<Expense> updatedExpenseList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             String name = document.getString("name");
                             double sum = document.getDouble("sum");
                             String day = document.getString("day");
-                            String month = document.getString("month"); // Romanian month name
+                            String month = document.getString("month");
                             String year = document.getString("year");
-
-                            // Debugging: Log each expense fetched
-                            Log.d("ExpenseDetails", "Expense fetched: " + name + ", " + sum + ", " + day + "/" + month + "/" + year);
 
                             updatedExpenseList.add(new Expense(name, sum, day, month, year));
                         }
 
-                        // Debugging: Log the size of the updated expense list
-                        Log.d("ExpenseDetails", "Updated expense list size: " + updatedExpenseList.size());
-
-                        // Update adapter with the new list of expenses
+                        // Update adapter
                         adapter.updateExpenses(updatedExpenseList);
                         adapter.notifyDataSetChanged();
 
-                        // Check if the list is empty
+                        // verificam daca avem cheltuieli pentru ziua selctata
                         if (updatedExpenseList.isEmpty()) {
-                            Log.d("ExpenseDetails", "No expenses found for the selected date.");
                             textEmptyState.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
-                            Log.d("ExpenseDetails", "Expenses found. Updating UI.");
                             textEmptyState.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
                     })
                     .addOnFailureListener(e -> {
-                        // Debugging: Log the error
-                        Log.e("Firestore", "Error fetching expenses", e);
                         Toast.makeText(this, "Eroare la incarcarea cheltuielilor", Toast.LENGTH_SHORT).show();
                     });
         } else {
-            // Debugging: Log if the user is not authenticated
-            Log.e("ExpenseDetails", "User is not authenticated.");
             Toast.makeText(this, "User-ul nu e autentificat", Toast.LENGTH_SHORT).show();
         }
     }
@@ -177,14 +158,11 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Debugging: Log the selected month and year
-            Log.d("ExpenseDetails", "Fetching expenses for categoryId: " + categoryId);
-            Log.d("ExpenseDetails", "Selected month: " + selectedMonth + ", Year: " + selectedYear);
 
-            // Fetch expenses based on categoryId, month (Romanian name), and year
+            // fetch expenses din firebase
             db.collection("users").document(userId).collection("expenses")
                     .whereEqualTo("categoryId", categoryId)
-                    .whereEqualTo("month", selectedMonth) // Use Romanian month name
+                    .whereEqualTo("month", selectedMonth)
                     .whereEqualTo("year", selectedYear)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -199,47 +177,37 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                             String name = document.getString("name");
                             double sum = document.getDouble("sum");
                             String day = document.getString("day");
-                            String month = document.getString("month"); // Romanian month name
+                            String month = document.getString("month");
                             String year = document.getString("year");
-
-                            // Debugging: Log each expense fetched
-                            Log.d("ExpenseDetails", "Expense fetched: " + name + ", " + sum + ", " + day + "/" + month + "/" + year);
 
                             updatedExpenseList.add(new Expense(name, sum, day, month, year));
                         }
 
-                        // Debugging: Log the size of the updated expense list
-                        Log.d("ExpenseDetails", "Updated expense list size: " + updatedExpenseList.size());
-
-                        // Update adapter with the new list of expenses
+                        //update adapter
                         adapter.updateExpenses(updatedExpenseList);
                         adapter.notifyDataSetChanged();
 
-                        // Check if the list is empty
+                        // verificam daca lista e goala
                         if (updatedExpenseList.isEmpty()) {
-                            Log.d("ExpenseDetails", "No expenses found for the selected month.");
                             textEmptyState.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
-                            Log.d("ExpenseDetails", "Expenses found. Updating UI.");
                             textEmptyState.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
                     })
                     .addOnFailureListener(e -> {
-                        // Debugging: Log the error
-                        Log.e("Firestore", "Error fetching expenses", e);
+
                         Toast.makeText(this, "Eroare la incarcarea cheltuielilor", Toast.LENGTH_SHORT).show();
                     });
         } else {
-            // Debugging: Log if the user is not authenticated
-            Log.e("ExpenseDetails", "User is not authenticated.");
+
             Toast.makeText(this, "User-ul nu e autentificat", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void deleteExpense(Expense expense, int position) {
-        // Pop-up for confirmation
+        // Pop-up pentru delete
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setTitle("Confirma stergerea cheltuielii");
         builder.setMessage("Esti sigur ca vrei sa stergi cheltuiala inregistrata?\n\n" +
@@ -267,7 +235,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                     .whereEqualTo("name", expense.getName())
                     .whereEqualTo("sum", expense.getSum())
                     .whereEqualTo("day", expense.getDay())
-                    .whereEqualTo("month", expense.getMonth()) // Romanian month name
+                    .whereEqualTo("month", expense.getMonth())
                     .whereEqualTo("year", expense.getYear())
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -276,13 +244,12 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                                     .document(document.getId())
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
-                                        // Remove the expense from the list and update the adapter
+                                        // stergem cheltuiala din lista si update adapter
                                         expenseList.remove(position);
                                         adapter.notifyItemRemoved(position);
 
                                         Toast.makeText(this, "Cheltuiala stearsa", Toast.LENGTH_SHORT).show();
 
-                                        // If the list becomes empty, update the UI
                                         if (expenseList.isEmpty()) {
                                             textEmptyState.setVisibility(View.VISIBLE);
                                             recyclerView.setVisibility(View.GONE);
@@ -292,13 +259,11 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
                                         setResult(RESULT_OK, resultIntent);
                                     })
                                     .addOnFailureListener(e -> {
-                                        Log.e("Firestore", "Eroare la stergerea cheltuielii", e);
                                         Toast.makeText(this, "Eroare la stergerea cheltuielii", Toast.LENGTH_SHORT).show();
                                     });
                         }
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Cheltuiala selectata nu exista in baza de date", e);
                         Toast.makeText(this, "Cheltuiala selectata nu exista in baza de date", Toast.LENGTH_SHORT).show();
                     });
         }
@@ -308,6 +273,8 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("ExpenseActivity", "onCreateOptionsMenu called");
+        ToolbarUtils.loadToolbarIcon(this, menu);
         return true;
     }
 
@@ -334,5 +301,13 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    //refresh meniu
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("ExpenseActivity", "onResume called");
+        invalidateOptionsMenu();
     }
 }
