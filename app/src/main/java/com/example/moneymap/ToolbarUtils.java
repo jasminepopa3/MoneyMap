@@ -40,7 +40,10 @@ public class ToolbarUtils {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        int avatarResId = documentSnapshot.getLong("avatarResId").intValue();
+                        int avatarResId = documentSnapshot.contains("avatarResId") ?
+                                documentSnapshot.getLong("avatarResId").intValue() :
+                                R.drawable.ic_account; //default avatar
+
                         SharedPreferences sharedPreferences = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
                         sharedPreferences.edit().putInt(AVATAR_KEY, avatarResId).apply();
                         activity.invalidateOptionsMenu(); // Refresh the menu

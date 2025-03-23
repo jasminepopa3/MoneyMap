@@ -51,7 +51,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -72,16 +71,14 @@ public class ProfileActivity extends AppCompatActivity {
         int savedAvatar = sharedPreferences.getInt(AVATAR_KEY, R.drawable.ic_account);
         currentAvatar.setImageResource(savedAvatar);
 
-        // "Edit Profile Picture" button
+        // edit profile
         buttonEditProfilePicture.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, AvatarSelectionActivity.class);
             startActivityForResult(intent, AVATAR_SELECTION_REQUEST);
         });
 
-        // Set up spinners
         setupSpinners();
 
-        // Load categories into cache
         loadCategoriesIntoCache();
     }
 
@@ -224,7 +221,7 @@ public class ProfileActivity extends AppCompatActivity {
                             // Set up pie chart
                             PieDataSet dataSet = new PieDataSet(entries, "");
                             dataSet.setColors(colors);
-                            dataSet.setValueTextSize(25f);
+                            dataSet.setValueTextSize(18f);
                             dataSet.setValueTextColor(Color.BLACK);
                             dataSet.setValueLinePart1OffsetPercentage(0f);
                             dataSet.setValueLinePart1Length(0f);

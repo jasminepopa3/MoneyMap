@@ -259,5 +259,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
         Log.d("HomeActivity", "onResume called");
         invalidateOptionsMenu();
+        // total cheltuieli
+        fetchTotalExpenses();
+        // bugetul
+        fetchUserBudget();
     }
 }
