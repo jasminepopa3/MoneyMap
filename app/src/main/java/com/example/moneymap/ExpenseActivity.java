@@ -136,7 +136,7 @@ public class ExpenseActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String newMonth = parent.getItemAtPosition(position).toString();
-                if (!newMonth.equals(selectedMonth)) { // Ensure it's a new selection
+                if (!newMonth.equals(selectedMonth)) {
                     selectedMonth = newMonth;
                     updateExpenses();
                 }
@@ -253,12 +253,13 @@ public class ExpenseActivity extends AppCompatActivity {
                             String categoryId = document.getString("categoryId");
                             double sum = document.getDouble("sum");
                             String name = document.getString("name");
+                            String day=document.getString("day");
 
                             if (categoryId != null) {
                                 Category category = categoryCache.get(categoryId);
                                 if (category != null) {
                                     // facem un Expense obj
-                                    Expense expense = new Expense(name, sum, selectedMonth, selectedYear);
+                                    Expense expense = new Expense(name, sum, day,selectedMonth, selectedYear);
 
                                     //daca e o categorie care inca nu apare in map facem un nou GroupedExpense obj
                                     //folosind id-ul categ
@@ -304,6 +305,8 @@ public class ExpenseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("ExpenseActivity", "onCreateOptionsMenu called");
+        ToolbarUtils.loadToolbarIcon(this, menu); // Load the avatar icon
         return true;
     }
 
@@ -330,6 +333,14 @@ public class ExpenseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    //refresh meniu
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("ExpenseActivity", "onResume called");
+        invalidateOptionsMenu();
     }
 
 }

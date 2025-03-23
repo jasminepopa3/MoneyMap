@@ -7,5 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="budget_exceeded">#FF0000</color> <!-- Red -->
+    <color name="budget_warning">#FFA500</color> <!-- Orange -->
+    <color name="budget_good">#00FF00</color> <!-- Green -->
 
 </resources>

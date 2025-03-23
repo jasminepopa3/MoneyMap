@@ -22,17 +22,22 @@
         android:clickable="false"
         android:focusable="false" />
 
-    <!-- TextView pentru suma cheltuielilor și buget -->
-    <TextView
-        android:id="@+id/textViewSummary"
+    <ProgressBar
+        android:id="@+id/loadingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Suma cheltuielilor: 0 RON / Buget: 1000 RON"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="24dp" />
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+    <!-- TextView pentru suma cheltuielilor și buget -->
+    <TextView
+        android:id="@+id/textExpensesBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:layout_marginTop="30sp"
+        android:layout_marginBottom="30sp"
+        android:layout_gravity="center_horizontal"/>
 
     <!-- Butonul CATEGORII -->
     <Button
@@ -68,5 +73,8 @@
         android:layout_gravity="center_horizontal"
         android:padding="12dp"
         android:backgroundTint="@color/purple_500" />
+
+
+
 
 </LinearLayout>

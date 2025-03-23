@@ -57,8 +57,21 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Log.d("Register", "createUserWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
+
+                        //set default avatar
+                        String userId = user.getUid();
+                        Map<String, Object> userData = new HashMap<>();
+                        userData.put("email", email);
+                        userData.put("avatarResId", R.drawable.ic_account); // Default avatar
+
+                        db.collection("users").document(userId)
+                                .set(userData)
+                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Default avatar set"))
+                                .addOnFailureListener(e -> Log.e("Firestore", "Error setting default avatar", e));
+
                         addDefaultCategories(user);
                         updateUI(user);
+
                     } else {
                         Log.w("Register", "createUserWithEmail:failure", task.getException());
                         Toast.makeText(RegisterActivity.this, "Registration failed.",

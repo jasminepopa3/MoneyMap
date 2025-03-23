@@ -60,6 +60,8 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
     protected void onResume() {
         super.onResume();
         loadCategories(); // Reîncarcă categoriile
+        //refresh meniu
+        invalidateOptionsMenu();
     }
 
     private void loadCategories() {
@@ -148,6 +150,8 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("ExpenseActivity", "onCreateOptionsMenu called");
+        ToolbarUtils.loadToolbarIcon(this, menu); // Load the avatar icon
         return true;
     }
 
@@ -175,4 +179,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
         startActivity(intent);
         finish();
     }
+
+
 }

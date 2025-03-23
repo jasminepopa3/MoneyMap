@@ -1,11 +1,13 @@
 package com.example.moneymap;
 
-import android.app.Activity;
+import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -18,41 +20,61 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddExpenseActivity extends AppCompatActivity {
 
     private Spinner spinnerCategory;
     private EditText editTextName, editTextSum;
     private Button buttonSaveExpense, buttonCancel;
+    private CalendarView calendarView;
     private List<Category> categories = new ArrayList<>();
 
     private String selectedMonth;
     private String selectedYear;
+    private String selectedDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
-        Intent intent = getIntent();
-        selectedMonth = intent.getStringExtra("month");
-        selectedYear = intent.getStringExtra("year");
-
-        // views
+        // Initialize views
         spinnerCategory = findViewById(R.id.spinner_category);
         editTextName = findViewById(R.id.editText_name);
         editTextSum = findViewById(R.id.editText_sum);
         buttonSaveExpense = findViewById(R.id.button_save_expense);
         buttonCancel = findViewById(R.id.button_cancel);
+        calendarView = findViewById(R.id.calendarView);
 
-        // incarcam categ
+        Calendar calendar = Calendar.getInstance();
+        selectedDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1);
+        selectedYear = String.valueOf(calendar.get(Calendar.YEAR));
+
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            selectedDay = String.valueOf(dayOfMonth);
+            selectedMonth = getRomanianMonthName(month + 1);
+            selectedYear = String.valueOf(year);
+        });
+
+        // Load categories
         loadCategories();
 
         buttonSaveExpense.setOnClickListener(v -> saveExpense());
         buttonCancel.setOnClickListener(v -> finish());
+    }
+
+    private String getRomanianMonthName(int month) {
+        String[] romanianMonths = {
+                "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
+                "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"
+        };
+        return romanianMonths[month - 1];
     }
 
     private void loadCategories() {
@@ -69,6 +91,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                         Log.d("Firestore", "Number of categories fetched: " + queryDocumentSnapshots.size());
                         categories.clear();
 
+                        //dummy
+                        categories.add(new Category("", "Alege o categorie", "", ""));
+
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             String id = document.getId();
                             String name = document.getString("name");
@@ -81,9 +106,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Set category adapter
                         ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
                         spinnerCategory.setAdapter(categoryAdapter);
+                        spinnerCategory.setSelection(0);
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error loading categories", e);
@@ -101,9 +126,14 @@ public class AddExpenseActivity extends AppCompatActivity {
         String sumText = editTextSum.getText().toString().trim();
         Category selectedCategory = (Category) spinnerCategory.getSelectedItem();
 
-        // validam inputul
+        // Validate input
         if (name.isEmpty() || sumText.isEmpty() || selectedCategory == null) {
             Toast.makeText(this, "Completati toate campurile", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(selectedCategory==spinnerCategory.getItemAtPosition(0))
+        {
+            Toast.makeText(this, "Alegeti o categorie valida!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -119,32 +149,31 @@ public class AddExpenseActivity extends AppCompatActivity {
             return;
         }
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            //mapam obiectele expense impreuna cu atributele lor
+            // mapam variabilele cu atr din db
             Map<String, Object> expense = new HashMap<>();
             expense.put("categoryId", selectedCategory.getId());
             expense.put("name", name);
             expense.put("sum", sum);
+            expense.put("day", selectedDay);
             expense.put("month", selectedMonth);
             expense.put("year", selectedYear);
             expense.put("timestamp", System.currentTimeMillis());
 
-            // salvam expense in baza de date
+            // salvam expense in db
             db.collection("users").document(userId).collection("expenses")
                     .add(expense)
                     .addOnSuccessListener(documentReference -> {
                         Log.d("Firestore", "Expense added successfully with ID: " + documentReference.getId());
                         Toast.makeText(this, "Cheltuiala a fost adaugata cu succes", Toast.LENGTH_SHORT).show();
 
-
-                        Expense newExpense = new Expense(name, sum, selectedMonth, selectedYear);
-
-                        //pasam obiectul expense in ExpenseActivity pentru
-                        // a fi adaugat in categ corespunzatoare si afisat
+                        // pasam obiectul la ExpenseActivity
+                        Expense newExpense = new Expense(name, sum, selectedDay, selectedMonth, selectedYear);
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("newExpense", newExpense);
                         setResult(RESULT_OK, resultIntent);

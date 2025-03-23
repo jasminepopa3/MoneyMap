@@ -214,6 +214,8 @@ public class BudgetActivity extends AppCompatActivity implements CategoryBudgetA
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("ExpenseActivity", "onCreateOptionsMenu called");
+        ToolbarUtils.loadToolbarIcon(this, menu); // Load the avatar icon
         return true;
     }
 
@@ -240,5 +242,13 @@ public class BudgetActivity extends AppCompatActivity implements CategoryBudgetA
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    //refresh meniu
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("ExpenseActivity", "onResume called");
+        invalidateOptionsMenu();
     }
 }

@@ -13,6 +13,8 @@ firebaseAuth = "23.0.0"
 googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "24.9.1"
 firebaseBom = "32.7.0"
+mpandroidchart = "3.1.0"
+
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -27,6 +29,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
