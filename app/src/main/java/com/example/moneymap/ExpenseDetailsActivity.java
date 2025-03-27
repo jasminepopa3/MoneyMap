@@ -44,6 +44,34 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense_details);
 
+        Intent intent = getIntent();
+        selectedMonth = intent.getStringExtra("selectedMonth");
+        selectedYear = intent.getStringExtra("selectedYear");
+
+        String[] monthsArray = getResources().getStringArray(R.array.months);
+
+        int monthIndex = -1;
+        for (int i = 0; i < monthsArray.length; i++) {
+            if (monthsArray[i].equals(selectedMonth)) {
+                monthIndex = i;
+                break;
+            }
+        }
+
+        Calendar calendar = Calendar.getInstance();
+
+        if (monthIndex != -1) {
+            calendar.set(Calendar.MONTH, monthIndex);
+            calendar.set(Calendar.YEAR, Integer.parseInt(selectedYear));
+        } else {
+            Log.e("AddExpenseActivity", "Luna selectată nu a fost găsită în array-ul de luni");
+            calendar.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
+            calendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        }
+
+        calendarView = findViewById(R.id.calendarView);
+        calendarView.setDate(calendar.getTimeInMillis(), false, true);
+
         // Set up the Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         ToolbarUtils.setupToolbar(this, toolbar);
@@ -59,11 +87,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity {
         categoryName = getIntent().getStringExtra("categoryName");
         categoryId = getIntent().getStringExtra("categoryId");
 
-        //initializam data
-        Calendar calendar = Calendar.getInstance();
         selectedDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1);
-        selectedYear = String.valueOf(calendar.get(Calendar.YEAR));
 
 
         textCategoryTitle.setText("Cheltuieli pentru " + categoryName + " - " + selectedDay + " " + selectedMonth + " " + selectedYear);
