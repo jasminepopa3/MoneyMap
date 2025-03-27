@@ -54,4 +54,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.6.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("com.prolificinteractive:material-calendarview:1.4.3")
+
 }

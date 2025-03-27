@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,22 +47,42 @@ public class HomeActivity extends AppCompatActivity {
         ToolbarUtils.setupToolbar(this, toolbar);
 
         loadingBar = findViewById(R.id.loadingBar);
-        CalendarView calendarView = findViewById(R.id.calendarView);
 
-        Calendar calendar = Calendar.getInstance();
-        currentMonthIndex = calendar.get(Calendar.MONTH);
-        currentYear = calendar.get(Calendar.YEAR);
+        MaterialCalendarView calendarView = findViewById(R.id.calendarView);
+        calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_NONE);
 
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            Calendar selectedCalendar = Calendar.getInstance();
-            selectedCalendar.set(year, month, dayOfMonth);
-            if (month != currentMonthIndex || year != currentYear) {
-                currentMonthIndex = month;
-                currentYear = year;
-                fetchTotalExpenses();
-                fetchUserBudget();
+        calendarView.setWeekDayFormatter(dayOfWeek -> {
+            switch (dayOfWeek) {
+                case Calendar.SUNDAY:
+                    return "D";
+                case Calendar.MONDAY:
+                    return "L";
+                case Calendar.TUESDAY:
+                    return "Ma";
+                case Calendar.WEDNESDAY:
+                    return "Mi";
+                case Calendar.THURSDAY:
+                    return "J";
+                case Calendar.FRIDAY:
+                    return "V";
+                case Calendar.SATURDAY:
+                    return "S";
+                default:
+                    return "";
             }
         });
+
+
+        calendarView.setOnMonthChangedListener((widget, date) -> {
+            currentMonthIndex = date.getMonth(); //
+            currentYear = date.getYear();
+
+//            Toast.makeText(this, "Luna selectată: " + currentMonthIndex + "/" + currentYear, Toast.LENGTH_SHORT).show();
+
+            fetchTotalExpenses();
+            fetchUserBudget();
+        });
+
 
         // Găsește butonul "CATEGORII" și setează un OnClickListener
         Button buttonCategories = findViewById(R.id.buttonCategories);
@@ -84,6 +106,10 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ExpenseActivity.class);
             startActivity(intent);
         });
+
+        CalendarDay currentDate = calendarView.getCurrentDate();
+        currentMonthIndex = currentDate.getMonth();
+        currentYear = currentDate.getYear();
 
         // total cheltuieli
         fetchTotalExpenses();
@@ -213,7 +239,7 @@ public class HomeActivity extends AppCompatActivity {
     private void updateRatioUI() {
         TextView textExpensesBudget = findViewById(R.id.textExpensesBudget);
         if (textExpensesBudget != null) {
-            String formattedRatio = String.format("%.2f/%.2f RON", totalExpenses, totalBudget);
+            String formattedRatio =  "Total cheltuieli/buget luna: " + String.format("%.2f/%.2f RON", totalExpenses, totalBudget);
 
             textExpensesBudget.setText(formattedRatio);
         }
