@@ -1,6 +1,8 @@
 package com.example.moneymap;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     private int currentYear;
 
     private ProgressBar loadingBar;
+    private ProgressBar budgetProgressBar;
     private int loadingCounter = 2;
 
     @Override
@@ -47,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         ToolbarUtils.setupToolbar(this, toolbar);
 
         loadingBar = findViewById(R.id.loadingBar);
+        budgetProgressBar = findViewById(R.id.budgetProgressBar);
 
         MaterialCalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_NONE);
@@ -238,10 +243,32 @@ public class HomeActivity extends AppCompatActivity {
     // functie pentru update UI
     private void updateRatioUI() {
         TextView textExpensesBudget = findViewById(R.id.textExpensesBudget);
-        if (textExpensesBudget != null) {
-            String formattedRatio =  "Total cheltuieli/buget luna: " + String.format("%.2f/%.2f RON", totalExpenses, totalBudget);
+        ProgressBar budgetProgressBar = findViewById(R.id.budgetProgressBar);
 
+        if (textExpensesBudget != null && budgetProgressBar != null) {
+            String formattedRatio = String.format("%.2f/%.2f RON", totalExpenses, totalBudget);
             textExpensesBudget.setText(formattedRatio);
+
+            // calcularea procentului
+            if (totalBudget > 0) {
+                double percentage = (totalExpenses / totalBudget) * 100;
+                int progress = (int) Math.min(percentage, 100); // Cap at 100%
+                budgetProgressBar.setProgress(progress);
+
+                int progressColor;
+                if (percentage >= 90) {
+                    progressColor = ContextCompat.getColor(this, R.color.error_red);
+                } else if (percentage >= 75) {
+                    progressColor = ContextCompat.getColor(this, R.color.warning_orange);
+                } else {
+                    progressColor = ContextCompat.getColor(this, R.color.primary);
+                }
+
+                budgetProgressBar.setProgressTintList(ColorStateList.valueOf(progressColor));
+
+            } else {
+                budgetProgressBar.setProgress(0);
+            }
         }
     }
 

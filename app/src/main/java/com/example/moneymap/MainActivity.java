@@ -119,11 +119,14 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("Firestore", "Adding default categories for user: " + userId);
 
+
+
             // Lista de categorii predefinite cu culori
             Map<String, String> defaultCategories = new HashMap<>();
-            defaultCategories.put("Alimente", "#FF5733"); // Orange
-            defaultCategories.put("Divertisment", "#33FF57"); // Green
-            defaultCategories.put("Igiena", "#3357FF"); // Blue
+            defaultCategories.put("Alimente", "#218380"); // dark teal
+            defaultCategories.put("Divertisment", "#F4A5AE"); // dusty pink
+            defaultCategories.put("Igiena", "#FFBC42"); // golden yellow
+
 
             // Obține luna și anul curent
             Calendar calendar = Calendar.getInstance();
@@ -134,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             for (Map.Entry<String, String> entry : defaultCategories.entrySet()) {
                 String categoryName = entry.getKey();
                 String color = entry.getValue();
+                Log.d("Culoare:",color);
 
                 Map<String, Object> category = new HashMap<>();
                 category.put("name", categoryName);

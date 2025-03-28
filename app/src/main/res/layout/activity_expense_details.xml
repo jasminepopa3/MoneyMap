@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/gradient_background"
     android:padding="16dp">
 
     <!-- Include the Toolbar -->
@@ -12,23 +14,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:theme="@style/GreenCalendarView"
+        android:weekDayTextAppearance="@style/CalendarWeekDayTextAppearance"/>
 
     <Button
         android:id="@+id/button_show_month_expenses"
-        android:layout_width="match_parent"
+        android:layout_width="200sp"
         android:layout_height="wrap_content"
         android:text="Afiseaza cheltuielile pentru toata luna"
-        android:layout_marginBottom="16dp"/>
-
+        android:textColor="@color/onPrimary"
+        android:backgroundTint="@color/primary"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:id="@+id/text_category_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cheltuieli pentru categorie"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="@color/primary"
         android:gravity="center"
         android:layout_marginBottom="16dp"/>
 
@@ -43,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nu exista cheltuieli pentru aceasta zi."
+        android:textColor="@color/primaryVariant"
         android:gravity="center"
         android:visibility="gone"/>
 

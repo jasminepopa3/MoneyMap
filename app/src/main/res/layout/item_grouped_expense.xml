@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
     android:layout_gravity="center_horizontal"
-    android:background="#404040"
+    android:background="@color/secondary"
     android:clickable="true"
     android:focusable="true">
 
@@ -39,7 +39,7 @@
                 android:text="Category Name"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/primary" />
 
             <!-- Total and Budget (Combined) -->
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_gravity="right"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/primary"  />
 
             <!-- Progress Bar -->
             <ProgressBar
@@ -69,7 +69,7 @@
                 android:text="0.00%"
                 android:textSize="16sp"
                 android:layout_gravity="right"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/primary"  />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

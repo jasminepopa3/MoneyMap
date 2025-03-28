@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/gradient_background"
     android:padding="16dp">
 
     <CalendarView
@@ -9,19 +11,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:theme="@style/GreenCalendarView"
+        android:weekDayTextAppearance="@style/CalendarWeekDayTextAppearance"/>
 
     <Spinner
         android:id="@+id/spinner_category"
-        android:layout_width="match_parent"
-        android:text="Alege o categorie"
-        android:layout_height="wrap_content" />
+        android:layout_width="200sp"
+        android:layout_height="45sp"
+        android:background="@color/primary"
+        android:popupBackground="@color/primary"
+        android:padding="7dp"
+        android:layout_marginBottom="16dp" />
 
     <EditText
         android:id="@+id/editText_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Denumire"
+        android:textColor="@color/primary"
+        android:textColorHint="@color/primaryVariant"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
         android:inputType="text" />
 
     <EditText
@@ -29,18 +41,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Suma"
+        android:textColor="@color/primary"
+        android:textColorHint="@color/primaryVariant"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
         android:inputType="numberDecimal" />
 
     <Button
         android:id="@+id/button_save_expense"
-        android:layout_width="match_parent"
+        android:layout_width="200sp"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:text="Save"
+        android:textColor="@color/onPrimary"
+        android:backgroundTint="@color/primary"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp" />
 
     <Button
         android:id="@+id/button_cancel"
-        android:layout_width="match_parent"
+        android:layout_width="200sp"
         android:layout_height="wrap_content"
-        android:text="Cancel" />
+        android:text="Cancel"
+        android:textColor="@color/primary"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/secondary"
+        android:padding="16dp" />
 
 </LinearLayout>

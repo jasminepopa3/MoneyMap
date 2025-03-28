@@ -22,7 +22,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     private EditText editTextCategoryDescription;
     private Button buttonSaveCategory;
     private Button[] colorButtons; // Array to hold color buttons
-    private String selectedColor = "#FF5733"; // Default color (Orange)
+    private String selectedColor = "#F75C03"; // Default color (Orange)
     private Button lastSelectedButton; // Track the last selected button
     private Category categoryToEdit; // Categoria care trebuie editată
 
@@ -93,12 +93,12 @@ public class AddCategoryActivity extends AppCompatActivity {
 
     private String getColorForButton(int index) {
         switch (index) {
-            case 0: return "#FF5733"; // Orange
-            case 1: return "#33FF57"; // Green
-            case 2: return "#3357FF"; // Blue
-            case 3: return "#FF33A1"; // Pink
-            case 4: return "#A133FF"; // Purple
-            default: return "#FF5733"; // Default
+            case 0: return "#D4A59A"; // Soft terracotta
+            case 1: return "#F7C9B6"; // Peach
+            case 2: return "#C08552"; // Warm brown
+            case 3: return "#E3B23C"; // Mustard yellow
+            case 4: return "#A44A3F"; // Rust red
+            default: return "#F75C03"; // Default- orange
         }
     }
 

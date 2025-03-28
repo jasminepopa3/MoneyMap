@@ -32,6 +32,10 @@ public class AvatarSelectionActivity extends AppCompatActivity {
         avatarList.add(R.drawable.avatar_1);
         avatarList.add(R.drawable.avatar_2);
         avatarList.add(R.drawable.avatar_3);
+        avatarList.add(R.drawable.avatar_4);
+        avatarList.add(R.drawable.avatar_5);
+        avatarList.add(R.drawable.avatar_6);
+
 
 
         AvatarAdapter adapter = new AvatarAdapter(this, avatarList);
