@@ -105,9 +105,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             // Lista de categorii predefinite cu culori
             Map<String, String> defaultCategories = new HashMap<>();
-            defaultCategories.put("Alimente", "#FF5733"); // Orange
-            defaultCategories.put("Divertisment", "#33FF57"); // Green
-            defaultCategories.put("Igiena", "#3357FF"); // Blue
+            defaultCategories.put("Alimente", "#F7C9B6"); // peach
+            defaultCategories.put("Divertisment", "#E3B23C"); // mustard yellow
+            defaultCategories.put("Igiena", "#A44A3F"); // rust red
 
             // Obține luna și anul curent
             Calendar calendar = Calendar.getInstance();

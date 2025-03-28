@@ -123,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Lista de categorii predefinite cu culori
             Map<String, String> defaultCategories = new HashMap<>();
-            defaultCategories.put("Alimente", "#218380"); // dark teal
-            defaultCategories.put("Divertisment", "#F4A5AE"); // dusty pink
-            defaultCategories.put("Igiena", "#FFBC42"); // golden yellow
+            defaultCategories.put("Alimente", "#F7C9B6"); // peach
+            defaultCategories.put("Divertisment", "#E3B23C"); // mustard yellow
+            defaultCategories.put("Igiena", "#A44A3F"); // rust red
 
 
             // Obține luna și anul curent
