@@ -244,7 +244,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Legend legend = pieChart.getLegend();
                             legend.setEnabled(true);
                             legend.setTextSize(15f);
-                            legend.setTextColor(Color.WHITE);
+                            legend.setTextColor(Color.parseColor("#286b44"));
                             legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
                             legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
                             legend.setOrientation(Legend.LegendOrientation.VERTICAL);

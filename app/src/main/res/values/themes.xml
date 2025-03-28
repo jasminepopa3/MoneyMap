@@ -17,4 +17,35 @@
         <item name="android:elevation">6dp</item>
     </style>
 
+   <!-- Calendar View styles-->
+    <style name="GreenCalendarView" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/primary</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <item name="android:textColorPrimary">@color/primary</item>
+        <item name="android:windowBackground">@color/background</item>
+
+        <item name="android:dateTextAppearance">@style/CalendarDateTextAppearance</item>
+        <item name="android:weekNumberColor">@color/primaryVariant</item>
+        <item name="android:selectedWeekBackgroundColor">@color/secondary</item>
+        <item name="android:focusedMonthDateColor">@color/primary</item>
+        <item name="android:unfocusedMonthDateColor">@color/primaryVariant</item>
+    </style>
+
+    <!-- Material Calendar Text Styles -->
+    <style name="CalendarDateTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/primaryVariant</item> <!-- Dark green text -->
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="CalendarHeaderTextAppearance" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/primary</item> <!-- Even darker green -->
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CalendarWeekDayTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/primary</item> <!-- Dark green text -->
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

@@ -3,8 +3,10 @@ package com.example.moneymap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,19 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //redirect to login if user has account
+        TextView loginLink = findViewById(R.id.loginLinkText);
+        loginLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //intent to open LoginActivity
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                // Start the login activity
+                startActivity(intent);
+                finish();
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
