@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black"
+    android:background="@color/background"
     android:padding="16dp">
 
     <!-- Include the Toolbar -->
@@ -15,18 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:showWeekNumber="false"
         android:firstDayOfWeek="2"
         android:minDate="01/01/2023"
         android:maxDate="31/12/2070"
         android:clickable="false"
-        android:focusable="false" />
+        android:focusable="false"
+        android:background="@color/primaryVariant" />
 
     <ProgressBar
         android:id="@+id/loadingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:indeterminateTint="@color/primaryVariant"
         android:visibility="gone"/>
 
     <!-- TextView pentru suma cheltuielilor și buget -->
@@ -37,7 +39,8 @@
         android:textSize="25sp"
         android:layout_marginTop="30sp"
         android:layout_marginBottom="30sp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/onBackground"/>
 
     <!-- Butonul CATEGORII -->
     <Button
@@ -49,7 +52,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:padding="12dp"
-        android:backgroundTint="@color/purple_500" />
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/onPrimary"/>
 
     <!-- Butonul CHELTUIELI -->
     <Button
@@ -61,7 +65,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:padding="12dp"
-        android:backgroundTint="@color/teal_700" />
+        android:backgroundTint="@color/primaryVariant"
+        android:textColor="@color/onPrimary"/>
 
     <!-- Butonul BUGET -->
     <Button
@@ -72,9 +77,6 @@
         android:textSize="16sp"
         android:layout_gravity="center_horizontal"
         android:padding="12dp"
-        android:backgroundTint="@color/purple_500" />
-
-
-
-
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/onPrimary"/>
 </LinearLayout>

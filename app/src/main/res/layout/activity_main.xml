@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,17 +8,26 @@
     android:background="@drawable/bkg_main"
     tools:context=".MainActivity">
 
-    <!-- Logo sau Titlu al Aplicației -->
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="MoneyMap"
+        app:titleTextColor="@color/onPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <!-- Mesaj de Bun Venit -->
-
+    <!-- App Name -->
     <TextView
         android:id="@+id/textViewAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:text="MoneyMap"
-        android:textColor="@color/black"
+        android:textColor="@color/onBackground"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textViewWelcome"
@@ -25,19 +35,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Welcome Message -->
     <TextView
         android:id="@+id/textViewWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bine ai venit!"
-        android:textColor="@color/black"
+        android:text="Welcome!"
+        android:textColor="@color/onBackground"
         android:textSize="24sp"
         app:layout_constraintTop_toBottomOf="@+id/textViewAppName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20dp" />
 
-    <!-- Buton de Login -->
+    <!-- Login Button -->
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="0dp"
@@ -45,8 +56,8 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:text="Login"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/purple_500"
+        android:textColor="@color/onPrimary"
+        android:backgroundTint="@color/primary"
         android:textSize="18sp"
         android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@+id/textViewWelcome"
@@ -54,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="40dp" />
 
-    <!-- Buton de Register -->
+    <!-- Register Button -->
     <Button
         android:id="@+id/buttonRegister"
         android:layout_width="0dp"
@@ -62,8 +73,8 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:text="Register"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/teal_700"
+        android:textColor="@color/onBackground"
+        android:backgroundTint="@color/secondary"
         android:textSize="18sp"
         android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
@@ -71,23 +82,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20dp" />
 
-    <!-- Text pentru "Sau continuă cu" -->
-
-    <!-- Buton de Autentificare cu Google -->
-
+    <!-- "Or continue with" Text -->
     <TextView
         android:id="@+id/textViewOr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Sau continuă cu"
-        android:textColor="@color/black"
+        android:text="Or continue with"
+        android:textColor="@color/onBackground"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonRegister" />
 
+    <!-- Google Login Button -->
     <Button
         android:id="@+id/buttonGoogle"
         android:layout_width="351dp"
@@ -95,12 +104,12 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/primaryVariant"
         android:drawableStart="@drawable/ic_google"
         android:drawablePadding="8dp"
         android:padding="16dp"
-        android:text="Autentifică-te cu Google"
-        android:textColor="@color/black"
+        android:text="Sign in with Google"
+        android:textColor="@color/onPrimary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
