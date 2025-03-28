@@ -43,18 +43,42 @@ public class AddExpenseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
+        Intent intent = getIntent();
+        selectedMonth = intent.getStringExtra("month");
+        selectedYear = intent.getStringExtra("year");
+
+        String[] monthsArray = getResources().getStringArray(R.array.months);
+
+        int monthIndex = -1;
+        for (int i = 0; i < monthsArray.length; i++) {
+            if (monthsArray[i].equals(selectedMonth)) {
+                monthIndex = i;
+                break;
+            }
+        }
+
+        Calendar calendar = Calendar.getInstance();
+
+        if (monthIndex != -1) {
+            calendar.set(Calendar.MONTH, monthIndex);
+            calendar.set(Calendar.YEAR, Integer.parseInt(selectedYear));
+        } else {
+            Log.e("AddExpenseActivity", "Luna selectată nu a fost găsită în array-ul de luni");
+            calendar.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
+            calendar.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        }
+
+        calendarView = findViewById(R.id.calendarView);
+        calendarView.setDate(calendar.getTimeInMillis(), false, true);
+
+
+
         // Initialize views
         spinnerCategory = findViewById(R.id.spinner_category);
         editTextName = findViewById(R.id.editText_name);
         editTextSum = findViewById(R.id.editText_sum);
         buttonSaveExpense = findViewById(R.id.button_save_expense);
         buttonCancel = findViewById(R.id.button_cancel);
-        calendarView = findViewById(R.id.calendarView);
-
-        Calendar calendar = Calendar.getInstance();
-        selectedDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-        selectedMonth = getRomanianMonthName(calendar.get(Calendar.MONTH) + 1);
-        selectedYear = String.valueOf(calendar.get(Calendar.YEAR));
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             selectedDay = String.valueOf(dayOfMonth);
