@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
         // Inițializează Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        if (BuildConfig.DEBUG && isFastbotRunning()) {
+            autoLoginForFastbot();
+            return;
+        }
+
         // Configurează Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id)) // ID client Firebase
@@ -61,6 +67,36 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
+    }
+
+    private boolean isFastbotRunning() {
+        return getIntent().getBooleanExtra("FASTBOT_MODE", false);
+    }
+
+    private void autoLoginForFastbot() {
+        String testEmail = "fastbot@test.com";
+        String testPassword = "fastbot123";
+
+        mAuth.signInWithEmailAndPassword(testEmail, testPassword)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Merg direct la HomeActivity
+                        startActivity(new Intent(this, HomeActivity.class));
+                        finish();
+                    } else {
+                        // Daca contul nu exista (dar o sa existe), il creeaza
+                        createFastbotTestAccount(testEmail, testPassword);
+                    }
+                });
+    }
+
+    private void createFastbotTestAccount(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        autoLoginForFastbot();
+                    }
+                });
     }
 
     private void signInWithGoogle() {
