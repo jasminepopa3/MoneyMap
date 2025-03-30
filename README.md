@@ -14,11 +14,11 @@ MoneyMap simplifies personal finance management by providing users with a clear 
 ## 🔍 Preview  
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="home_moneymap.jpg" alt="Bug 3" height="450" style="width: 19%;">
-    <img src="categories_moneymap.jpg" alt="Bug 4" height="450" style="width: 19%;">
-    <img src="budgets_moneymap.jpg" alt="Bug 2" height="450" style="width: 19%;">
-    <img src="expenses_s_moneymap.jpg" alt="Bug 1" height="450" style="width: 19%;">
-    <img src="expenses_d_moneymap.jpg" alt="Bug 1" height="450" style="width: 19%;">
+    <img src="home_moneymap.jpg" alt="Bug 3" height="400" style="width: 19%;">
+    <img src="categories_moneymap.jpg" alt="Bug 4" height="400" style="width: 19%;">
+    <img src="budgets_moneymap.jpg" alt="Bug 2" height="400" style="width: 19%;">
+    <img src="expenses_s_moneymap.jpg" alt="Bug 1" height="400" style="width: 19%;">
+    <img src="expenses_d_moneymap.jpg" alt="Bug 1" height="400" style="width: 19%;">
 </div>
 
 ---
