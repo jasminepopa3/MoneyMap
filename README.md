@@ -6,20 +6,20 @@
 - [Popeangă Antonia](https://github.com/antoniapopeanga)  
 - [Popa Jasmine](https://github.com/jasminepopa3)  
 
----  
-
 ## 📊 Epic story
 MoneyMap simplifies personal finance management by providing users with a clear and intuitive way to track their expenses, monitor income, and gain valuable insights into their spending habits. With seamless data synchronization and real-time updates, it empowers users to take control of their financial future with confidence.  
- 
+
+---  
+
 ## 🔍 Preview  
 
-| Section | Screenshot |  
-|---------|------------|  
-| **Home** | ![home](https://via.placeholder.com/150x300?text=Home+Screen) |  
-| **Categories** | ![categories](https://via.placeholder.com/150x300?text=Categories) |  
-| **Budgets** | ![budgets](https://via.placeholder.com/150x300?text=Budgets) |  
-| **Expenses summary** | ![expenses](https://via.placeholder.com/150x300?text=Expenses) |  
-| **Expenses detailed** | ![expenses](https://via.placeholder.com/150x300?text=Expenses) |  
+<div style="display: flex; justify-content: space-between;">
+    <img src="home_moneymap.jpg" alt="Bug 3" height="450" style="width: 19%;">
+    <img src="categories_moneymap.jpg" alt="Bug 4" height="450" style="width: 19%;">
+    <img src="budgets_moneymap.jpg" alt="Bug 2" height="450" style="width: 19%;">
+    <img src="expenses_s_moneymap.jpg" alt="Bug 1" height="450" style="width: 19%;">
+    <img src="expenses_d_moneymap.jpg" alt="Bug 1" height="450" style="width: 19%;">
+</div>
 
 ---
 
