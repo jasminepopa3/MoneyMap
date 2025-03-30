@@ -2,23 +2,76 @@
 
 ## Your personal finance companion, designed to give you a clear overview of your income and expenses  
 
-👩🏻‍💻 **Team Members:**  
+## 👩🏻‍💻 Team Members  
 - [Popeangă Antonia](https://github.com/antoniapopeanga)  
 - [Popa Jasmine](https://github.com/jasminepopa3)  
 
 ---  
 
-📊 **Epic story:**  
+## 📊 Epic story
 MoneyMap simplifies personal finance management by providing users with a clear and intuitive way to track their expenses, monitor income, and gain valuable insights into their spending habits. With seamless data synchronization and real-time updates, it empowers users to take control of their financial future with confidence.  
+ 
+## 🔍 Preview  
 
----  
+| Section | Screenshot |  
+|---------|------------|  
+| **Home** | ![home](https://via.placeholder.com/150x300?text=Home+Screen) |  
+| **Categories** | ![categories](https://via.placeholder.com/150x300?text=Categories) |  
+| **Budgets** | ![budgets](https://via.placeholder.com/150x300?text=Budgets) |  
+| **Expenses summary** | ![expenses](https://via.placeholder.com/150x300?text=Expenses) |  
+| **Expenses detailed** | ![expenses](https://via.placeholder.com/150x300?text=Expenses) |  
 
-🖥️ **Tech Stack:**  
+---
+
+## ✨ Core Features  
+
+### 🗓 **Monthly Overview**  
+- Interactive calendar showing **total expenses** vs **total budget**  
+- Quick navigation to all key sections  
+
+### 📑 **Categories Management**  
+- Customizable categories with:  
+  - Personalized names & descriptions  
+  - Color-coding system  
+- Easy add/edit functionality  
+
+### 💰 **Budget Planning**  
+- Set monthly budgets per category  
+- Visualize allocations for any selected month & year  
+
+### 💸 **Expense Tracking**  
+#### Summary View:  
+- Progress bars showing spending vs budget on each category
+- Filter by month & year
+  
+#### Detailed View:  
+- Daily expense breakdown  
+- Add new expenses with:  
+  - Date picker  
+  - Category selector  
+  - Amount input  
+
+### 📊 **Profile Dashboard**  
+- Custom profile avatar  
+- Circular chart displaying spending distribution  
+- Monthly overview at a glance  
+
+---
+
+## 🎨 Design Principles  
+✅ **Clean minimalist interface**  
+✅ **Intuitive navigation**  
+✅ **Visual data representation**  
+✅ **Consistent color system**  
+
+---
+
+## 🖥️ **Tech Stack:**  
 Android Studio IDE (Java) + Firebase (Database)  
 
 ---
 
-## 🔧 Fastbot2 Integration  
+## 🔧 Fastbot2 Testing Integration  
 
 1. **Set Up WSL & Dependencies**:  
      ```bash
@@ -104,5 +157,7 @@ Android Studio IDE (Java) + Firebase (Database)
     adb shell "CLASSPATH=/sdcard/monkeyq.jar app_process /system/bin com.android.commands.monkey.Monkey \  
     -p your.app.package --throttle 500 --running-minutes 60" > fastbot_logs.txt 2>&1     
      
-     ```    
+     ```
+
+
 
