@@ -175,4 +175,36 @@ Android Studio IDE (Java) + Firebase (Database)
 [Fastbot]*** WARNING *** 03-29 04:58:52.082 15630 15630 D Firestore: Category fetched: Alimente with ID: XpBYM0UDKCVNtESlGs9W
 [Fastbot]*** WARNING *** 03-29 04:58:52.082 15630 15630 D Firestore: Category fetched: 5Igien5a with ID: wkNi1hGgL2Z9Fu9gmiHp
 
+```
+```txt
+[Fastbot][2025-03-29 05:37:53.082] Events injected: 28981
+[Fastbot][2025-03-29 05:37:53.083] // Monkey is over!
+[Fastbot][2025-03-29 05:37:53.090] Total app activities:
+[Fastbot][2025-03-29 05:37:53.090]    1 com.example.moneymap.BudgetActivity
+[Fastbot][2025-03-29 05:37:53.090]    2 com.example.moneymap.AddExpenseActivity
+[Fastbot][2025-03-29 05:37:53.090]    3 com.google.android.gms.common.api.GoogleApiActivity
+[Fastbot][2025-03-29 05:37:53.090]    4 com.example.moneymap.ExpenseActivity
+[Fastbot][2025-03-29 05:37:53.091]    5 com.example.moneymap.ProfileActivity
+[Fastbot][2025-03-29 05:37:53.091]    6 com.example.moneymap.ExpenseDetailsActivity
+[Fastbot][2025-03-29 05:37:53.091]    7 com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+[Fastbot][2025-03-29 05:37:53.091]    8 com.example.moneymap.AddCategoryActivity
+[Fastbot][2025-03-29 05:37:53.091]    9 com.google.firebase.auth.internal.GenericIdpActivity
+[Fastbot][2025-03-29 05:37:53.091]   10 com.google.firebase.auth.internal.RecaptchaActivity
+[Fastbot][2025-03-29 05:37:53.091]   11 com.example.moneymap.AvatarSelectionActivity
+[Fastbot][2025-03-29 05:37:53.091]   12 com.example.moneymap.RegisterActivity
+[Fastbot][2025-03-29 05:37:53.091]   13 com.example.moneymap.LoginActivity
+[Fastbot][2025-03-29 05:37:53.091]   14 com.example.moneymap.HomeActivity
+[Fastbot][2025-03-29 05:37:53.091]   15 com.example.moneymap.MainActivity
+[Fastbot][2025-03-29 05:37:53.092]   16 com.example.moneymap.CategoryActivity
+[Fastbot][2025-03-29 05:37:53.093] Explored app activities:
+[Fastbot][2025-03-29 05:37:53.093]    1 com.example.moneymap.AddCategoryActivity
+[Fastbot][2025-03-29 05:37:53.093]    2 com.example.moneymap.AddExpenseActivity
+[Fastbot][2025-03-29 05:37:53.093]    3 com.example.moneymap.BudgetActivity
+[Fastbot][2025-03-29 05:37:53.093]    4 com.example.moneymap.CategoryActivity
+[Fastbot][2025-03-29 05:37:53.094]    5 com.example.moneymap.ExpenseActivity
+[Fastbot][2025-03-29 05:37:53.094]    6 com.example.moneymap.HomeActivity
+[Fastbot][2025-03-29 05:37:53.094]    7 com.example.moneymap.LoginActivity
+[Fastbot][2025-03-29 05:37:53.095]    8 com.example.moneymap.MainActivity
+[Fastbot][2025-03-29 05:37:53.095] Activity of Coverage: 50.0%
+
 
