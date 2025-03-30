@@ -158,6 +158,21 @@ Android Studio IDE (Java) + Firebase (Database)
     -p your.app.package --throttle 500 --running-minutes 60" > fastbot_logs.txt 2>&1     
      
      ```
+---
+     
+## 📁 File Snippets
 
+### fastbot_logs.txt
+```txt
+[Fastbot]*** WARNING *** 03-29 04:58:52.078 15280 15280 W [Fastbot]: *** WARNING *** %s03-24 03:45:23.063  1670  1670 D ConditionProviders.SCP: notifyCondition condition://android/schedule?days=1.2.3.4.5&start=22.0&end=7.0&exitAtAlarm=false STATE_TRUE reason=meetsSchedule
+[Fastbot]*** WARNING *** 03-29 04:58:52.078 15280 15280 W [Fastbot]: *** WARNING *** %s03-24 03:45:23.063  1670  1670 D ConditionProviders.SCP: Scheduling evaluate for Mon Mar 24 07:00:00 GMT+02:00 2025 (1742792400000), in +3h14m36s937ms, now=Mon Mar 24 03:45:23 GMT+02:00 2025 (1742780723063)
+[Fastbot]*** WARNING *** 03-29 04:58:52.079 15280 15280 W [Fastbot]: *** WARNING *** %s03-24 03:45:23.083  1670  1760 I ActivityManager: Start proc 9862:com.android.providers.calendar/u0a2 for content provider com.android.providers.calendar/.CalendarProvider2
+[Fastbot]*** WARNING *** 03-29 04:58:52.079 15280 15280 W [Fastbot]: *** WARNING *** %s03-24 03:45:23.114  1670  1683 I UsageStatsService: Time changed in UsageStats by 619752 seconds
+[Fastbot]*** WARNING *** 03-29 04:58:52.080 15630 15630 D Firestore: Number of categories fetched: 5
+[Fastbot]*** WARNING *** 03-29 04:58:52.081 15630 15630 D Firestore: Category fetched: b with ID: 1Ieb3JHA1Hs1j8NOYJ5z
+[Fastbot]*** WARNING *** 03-29 04:58:52.081 15630 15630 D Firestore: Category fetched: cg with ID: C7VS31GILQ9mFqR6Npzp
+[Fastbot]*** WARNING *** 03-29 04:58:52.081 15630 15630 D Firestore: Category fetched: Divertisment with ID: FOtSoXJfnThUQZ1R2OaO
+[Fastbot]*** WARNING *** 03-29 04:58:52.082 15630 15630 D Firestore: Category fetched: Alimente with ID: XpBYM0UDKCVNtESlGs9W
+[Fastbot]*** WARNING *** 03-29 04:58:52.082 15630 15630 D Firestore: Category fetched: 5Igien5a with ID: wkNi1hGgL2Z9Fu9gmiHp
 
 
