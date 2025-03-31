@@ -9,6 +9,9 @@
 ## 📊 Epic story
 MoneyMap simplifies personal finance management by providing users with a clear and intuitive way to track their expenses, monitor income, and gain valuable insights into their spending habits. With seamless data synchronization and real-time updates, it empowers users to take control of their financial future with confidence.  
 
+## 🎥 Demo
+You can watch the demo of the app here: https://youtu.be/JFgs0fpXWsM?si=YqGsJxtHCudCIzPN
+
 ---  
 
 ## 🔍 Preview  
